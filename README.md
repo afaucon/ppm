@@ -1,4 +1,4 @@
-# Python project manager
+# ppm - Python project manager
 
 This package allows to manage python projects.
 
@@ -86,14 +86,14 @@ Example of a report content:
 1. Project type: package
 2. Structure conformity: Pass
 3. Common files content
-   1. .gitignore: Pass
-   2. LICENSE: Pass
-   3. README.md: Pass
-   4. setup.py: Pass
-   5. package
-      1. __init__.py: Pass
-      2. __main.py: Pass
-      3. __version__.py: Pass
+   1. `.gitignore`: Pass
+   2. `LICENSE`: Pass
+   3. `README.md`: Pass
+   4. `setup.py`: Pass
+   5. package_name
+      1. `__init__.py`: Pass
+      2. `__main__.py`: Pass
+      3. `__version__.py`: Pass
 4. Git repository
    1. Local repository presence: Pass
    2. Remote repository presence: Pass
