@@ -1,5 +1,5 @@
-__description__ = 'Python project manager'
-__url__ = 'https://github.com/afaucon/python_project_manager'
+__description__ = 'ppm'
+__url__ = 'https://github.com/afaucon/ppm'
 __version__ = '0.0.1'
 __author__ = 'Adrien Faucon'
 __author_email__ = 'adrien.faucon@gmail.com'
