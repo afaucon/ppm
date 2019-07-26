@@ -9,7 +9,7 @@ from setuptools import setup
 
 package_name = "ppm"
 
-python_requires = ">=3.5"
+python_requires = ">=3.7"
 
 dependency_links = [
 ]
