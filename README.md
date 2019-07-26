@@ -55,6 +55,7 @@ ppm.create.create_application(application_name)
 ppm.list()
 ppm.report(package_name|application_name)
 ppm.reports()
+ppm.vscode()
 ```
 
 With the command line interface:
@@ -65,6 +66,7 @@ With the command line interface:
 >> python -m ppm list
 >> python -m ppm report [package_name|application_namme]
 >> python -m ppm reports
+>> python -m ppm vscode
 ```
 
 Or directly:
@@ -75,6 +77,7 @@ Or directly:
 >> ppm list
 >> ppm report [package_name|application_namme]
 >> ppm reports
+>> ppm vscode
 ```
 
 ## Report

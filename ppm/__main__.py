@@ -7,7 +7,7 @@ from ppm import module
 def main_procedure():
     parser = argparse.ArgumentParser(description=__info__.__description__)
 
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(required=True)
 
     parser_create = subparsers.add_parser('create')
     parser_create.add_argument('type', choices=['package', 'app'])
@@ -19,6 +19,10 @@ def main_procedure():
     parser_create.add_argument('name')
 
     parser_create = subparsers.add_parser('reports')
+
+    parser_create = subparsers.add_parser('vscode')
+
+    args = parser.parse_args()
 
     module.run()
 
