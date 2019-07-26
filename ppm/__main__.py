@@ -1,4 +1,4 @@
-from python_project_manager import module
+from ppm import module
 
 
 def main_procedure():
