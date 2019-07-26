@@ -82,9 +82,9 @@ Or directly:
 
 ## Report
 
-The report starts bu identifying if the project is a package or an application by checking the project structure.
+The report starts by identifying if the project is a package or an application by checking the project structure.
 
-Example of a report content:
+Example of a report content in case of a package:
 
 1. Project type: package
 2. Structure conformity: Pass
@@ -101,3 +101,29 @@ Example of a report content:
    1. Local repository presence: Pass
    2. Remote repository presence: Pass
    3. Git status: Pass
+
+## Project structure for a package
+
+- venv
+- src
+  - .git
+  - templated_package
+    - `__info__.py`
+    - `__init__.py`
+    - `__main__.py`
+  - `.gitignore`
+  - `LICENSE`
+  - `README.md`
+  - `setup.py`
+
+## Project structure for an app
+
+- venv
+- src
+  - .git
+  - templated_package
+    - `__info__.py`
+    - `main.py`
+  - `.gitignore`
+  - `LICENSE`
+  - `README.md`
