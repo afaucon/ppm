@@ -7,7 +7,7 @@ from setuptools import setup
 # ------------------------------------------------------------------------------
 # Documentation: https://setuptools.readthedocs.io/en/latest/setuptools.html
 
-package_name = "python_project_manager"
+package_name = "ppm"
 
 python_requires = ">=3.5"
 
@@ -19,7 +19,7 @@ install_requires = [
 
 entry_points = {
     'console_scripts': [
-        'python_project_manager = python_project_manager.__main__:main_procedure',
+        'ppm = ppm.__main__:main_procedure',
     ],
     'gui_scripts': [
     ]
