@@ -13,14 +13,15 @@ def main_procedure():
     parser_create.add_argument('type', choices=['package', 'app'])
     parser_create.add_argument('name')
 
-    parser_create = subparsers.add_parser('list')
+    parser_list = subparsers.add_parser('list')
 
-    parser_create = subparsers.add_parser('report')
-    parser_create.add_argument('name')
+    parser_report = subparsers.add_parser('report')
+    parser_report.add_argument('name')
 
-    parser_create = subparsers.add_parser('reports')
+    parser_reports = subparsers.add_parser('reports')
 
-    parser_create = subparsers.add_parser('vscode')
+    parser_vscode = subparsers.add_parser('vscode')
+    parser_vscode.add_argument('name')
 
     args = parser.parse_args()
 
