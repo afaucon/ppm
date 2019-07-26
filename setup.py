@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 import os
 from setuptools import setup
@@ -28,7 +29,7 @@ entry_points = {
 # ------------------------------------------------------------------------------
 
 about = {}
-with open(os.path.join(package_name, '__version__.py'), 'r') as f:
+with open(os.path.join(package_name, '__info__.py'), 'r') as f:
     exec(f.read(), about)
 
 with open('README.md', 'r') as f:
