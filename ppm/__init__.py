@@ -1,14 +1,17 @@
-def check_python_projects_path():
+def get_python_projects_path():
     import os.path
     import ppm.exceptions
 
     python_projects_path = os.environ.get('PYTHON_PRJ')
+
     if python_projects_path is None:
         raise ppm.exceptions.UndefinedPythonProjectsPath()
     if not os.path.isdir(python_projects_path):
         raise ppm.exceptions.PythonProjectsPathDoesNotExist()
-        
-check_python_projects_path()
+
+    return python_projects_path
+    
+python_projects_path = get_python_projects_path()
 
 from .__info__ import __description__
 from .__info__ import __url__
