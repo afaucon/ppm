@@ -9,8 +9,8 @@ This package allows to manage python projects.
 Install the package [from GitHub](https://pip.pypa.io/en/stable/reference/pip_install/#git).
 
 ```bash
->> pip install git+https://github.com/afaucon/ppm.git@v0.0.1
->> pip list
+(venv) C:\Users\Adrien>pip install git+https://github.com/afaucon/ppm.git@v0.0.1
+(venv) C:\Users\Adrien>pip list
 ```
 
 ### For developpers
@@ -18,9 +18,9 @@ Install the package [from GitHub](https://pip.pypa.io/en/stable/reference/pip_in
 Clone the package from GitHub and install it in editable mode (i.e. [setuptools "develop mode"](https://setuptools.readthedocs.io/en/latest/setuptools.html#development-mode)).
 
 ```bash
->> git clone git+https://github.com/afaucon/ppm.git
->> pip install --editable ppm
->> pip list
+(venv) C:\Users\Adrien>git clone git+https://github.com/afaucon/ppm.git
+(venv) C:\Users\Adrien>pip install --editable ppm
+(venv) C:\Users\Adrien>pip list
 ```
 
 ### Set the python projects location in a environment variable
@@ -28,7 +28,7 @@ Clone the package from GitHub and install it in editable mode (i.e. [setuptools 
 Set the environment variable to the directory in which all the python projects are located.
 
 ```bash
->> set PYTON_PRJ "path/to/my/python/projects"
+(venv) C:\Users\Adrien>set PYTON_PRJ "path/to/my/python/projects"
 ```
 
 Note:
@@ -54,33 +54,58 @@ ppm.create_package("package_name")
 ppm.create_application("application_name")
 ppm.list()
 ppm.report("package_name or application_name")
-ppm.reports()
 ppm.develop("vscode", "package_name or application_name")
 ```
 
 With the command line interface:
 
 ```bash
->> python -m ppm create package package_name
->> python -m ppm create app application_name
->> python -m ppm list
->> python -m ppm report [package_name|application_namme]
->> python -m ppm reports
->> python -m ppm develop vscode [package_name|application_namme]
+(venv) C:\Users\Adrien>python -m ppm create package package_name
+(venv) C:\Users\Adrien>python -m ppm create app application_name
+(venv) C:\Users\Adrien>python -m ppm list
+(venv) C:\Users\Adrien>python -m ppm report [package_name|application_namme]
+(venv) C:\Users\Adrien>python -m ppm develop vscode [package_name|application_namme]
 ```
 
 Or directly:
 
 ```bash
->> ppm create package package_name
->> ppm create app application_name
->> ppm list
->> ppm report [package_name|application_namme]
->> ppm reports
->> ppm devlop vscode [package_name|application_namme]
+(venv) C:\Users\Adrien>ppm create package package_name
+(venv) C:\Users\Adrien>ppm create app application_name
+(venv) C:\Users\Adrien>ppm list
+(venv) C:\Users\Adrien>ppm report [package_name|application_namme]
+(venv) C:\Users\Adrien>ppm devlop vscode [package_name|application_namme]
 ```
 
-## Report
+## List usage
+
+```bash
+(venv) C:\Users\Adrien>ppm list
+Project                           Type    Coherency check Last commit
+---------------------------------------------------------------------
+AllMyRunkeeperOnGoogleMaps        Package Pass            2019-04-02
+ClientServerSocketExample         Package Failed          2019-04-02
+DjangoChannels                    Package Pass            2019-04-02
+fauconblommaert_website           App     Pass            2019-04-02
+flasky                            App     Pass            2019-04-02
+GestionActions                    Package Pass            2019-04-02
+GetLabels_python                  App     Pass            2019-04-02
+git_test                          Package Pass            2019-04-02
+Google Apps Script                Package Pass            2019-04-02
+ImageMetadata                     App     Pass            2019-04-02
+ImageRenamer                      App     Pass            2019-04-02
+ImmowebTracker                    App     Pass            2019-04-02
+jokegetter                        App     Pass            2019-04-02
+ListeCadeaux                      App     Failed          2019-04-02
+Plan_electrique_maison            Package Pass            2019-04-02
+ppm                               Package Pass            2019-04-02
+templated_application             App     Pass            2019-04-02
+templated_package                 Package Pass            2019-04-02
+ThreadingProcessSubprocessExample App     Pass            2019-04-02
+Viessmann-boiler-monitoring       App     Pass            2019-04-02
+```
+
+## Report usage
 
 The report starts by identifying if the project is a package or an application by checking the project structure.
 

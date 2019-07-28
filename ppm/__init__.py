@@ -25,4 +25,4 @@ from .__info__ import __license__
 from .__info__ import __copyright__
 
 
-from .api import create_package, create_application, list, report, reports, develop
+from .api import create_package, create_application, list, report, develop
