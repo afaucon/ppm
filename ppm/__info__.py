@@ -1,3 +1,4 @@
+__package_name__ = "ppm"
 __description__ = 'This package allows to manage python projects.'
 __url__ = 'https://github.com/afaucon/ppm'
 __version__ = '0.0.1'

@@ -50,12 +50,12 @@ import ppm
 print(ppm.__author__)
 print(ppm.__version__)
 
-ppm.create.create_package(package_name)
-ppm.create.create_application(application_name)
+ppm.create.create_package("package_name")
+ppm.create.create_application("application_name")
 ppm.list()
-ppm.report(package_name|application_name)
+ppm.report("package_name or application_name")
 ppm.reports()
-ppm.vscode(package_name|application_name)
+ppm.develop("vscode", "package_name or application_name")
 ```
 
 With the command line interface:
@@ -66,7 +66,7 @@ With the command line interface:
 >> python -m ppm list
 >> python -m ppm report [package_name|application_namme]
 >> python -m ppm reports
->> python -m ppm vscode [package_name|application_namme]
+>> python -m ppm develop vscode [package_name|application_namme]
 ```
 
 Or directly:
@@ -77,7 +77,7 @@ Or directly:
 >> ppm list
 >> ppm report [package_name|application_namme]
 >> ppm reports
->> ppm vscode [package_name|application_namme]
+>> ppm devlop vscode [package_name|application_namme]
 ```
 
 ## Report
