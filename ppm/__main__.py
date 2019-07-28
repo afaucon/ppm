@@ -1,11 +1,11 @@
 import argparse
 
-from ppm import __info__
-from ppm import module
+import ppm.api
 
 
 def main_procedure():
-    parser = argparse.ArgumentParser(prog=__info__.__package_name__, description=__info__.__description__)
+    parser = argparse.ArgumentParser(prog=ppm.__info__.__package_name__, 
+                                     description=ppm.__info__.__description__)
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -22,7 +22,7 @@ def main_procedure():
     parser_report.add_argument('name')
 
     # Reports command
-    parser_reports = subparsers.add_parser('reports')
+    subparsers.add_parser('reports')
 
     # Develop command
     parser_vscode = subparsers.add_parser('develop')
@@ -31,7 +31,17 @@ def main_procedure():
 
     args = parser.parse_args()
 
-    module.run()
+    if args.command == "create":
+        ppm.api.create_package("package_name")
+        ppm.api.create_application("application_name")
+    if args.command == "list":
+        ppm.api.list()
+    if args.command == "report":
+        ppm.api.report("package_name or application_name")
+    if args.command == "reports":
+        ppm.api.reports()
+    if args.command == "develop":
+        ppm.api.develop("vscode", "package_name or application_name")
 
 if __name__ == "__main__":
     main_procedure()

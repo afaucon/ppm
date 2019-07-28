@@ -50,8 +50,8 @@ import ppm
 print(ppm.__author__)
 print(ppm.__version__)
 
-ppm.create.create_package("package_name")
-ppm.create.create_application("application_name")
+ppm.create_package("package_name")
+ppm.create_application("application_name")
 ppm.list()
 ppm.report("package_name or application_name")
 ppm.reports()
