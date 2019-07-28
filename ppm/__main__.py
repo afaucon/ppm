@@ -32,16 +32,18 @@ def main_procedure():
     args = parser.parse_args()
 
     if args.command == "create":
-        ppm.api.create_package("package_name")
-        ppm.api.create_application("application_name")
+        if args.type == "package":
+            ppm.api.create_package(args.name)
+        if args.type == "app":
+            ppm.api.create_application(args.name)
     if args.command == "list":
         ppm.api.list()
     if args.command == "report":
-        ppm.api.report("package_name or application_name")
+        ppm.api.report(args.name)
     if args.command == "reports":
         ppm.api.reports()
     if args.command == "develop":
-        ppm.api.develop("vscode", "package_name or application_name")
+        ppm.api.develop(args.program, args.name)
 
 if __name__ == "__main__":
     main_procedure()
