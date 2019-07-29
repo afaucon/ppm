@@ -53,7 +53,7 @@ print(ppm.__version__)
 ppm.create_package("package_name")
 ppm.create_app("application_name")
 ppm.list()
-ppm.report("package_name or application_name")
+ppm.check("package_name or application_name")
 ppm.develop("vscode", "package_name or application_name")
 ```
 
@@ -63,7 +63,7 @@ With the command line interface:
 (venv) C:\Users\Adrien>python -m ppm create package package_name
 (venv) C:\Users\Adrien>python -m ppm create app application_name
 (venv) C:\Users\Adrien>python -m ppm list
-(venv) C:\Users\Adrien>python -m ppm report [package_name|application_namme]
+(venv) C:\Users\Adrien>python -m ppm check [package_name|application_namme]
 (venv) C:\Users\Adrien>python -m ppm develop vscode [package_name|application_namme]
 ```
 
@@ -73,9 +73,41 @@ Or directly:
 (venv) C:\Users\Adrien>ppm create package package_name
 (venv) C:\Users\Adrien>ppm create app application_name
 (venv) C:\Users\Adrien>ppm list
-(venv) C:\Users\Adrien>ppm report [package_name|application_namme]
+(venv) C:\Users\Adrien>ppm check [package_name|application_namme]
 (venv) C:\Users\Adrien>ppm devlop vscode [package_name|application_namme]
 ```
+
+## Project structure for a package
+
+- venv
+- src
+  - .git
+  - templated_package
+    - `__info__.py`
+    - `__init__.py`
+    - `__main__.py`
+    - `api.py`
+    - `display.py`
+    - `exceptions.py`
+  - `.gitignore`
+  - `LICENSE`
+  - `README.md`
+  - `setup.py`
+
+## Project structure for an app
+
+- venv
+- src
+  - .git
+  - templated_app
+    - `__info__.py`
+    - `main.py`
+    - `exceptions.py`
+  - `.gitignore`
+  - `LICENSE`
+  - `README.md`
+
+## Create usage
 
 ## List usage
 
@@ -105,11 +137,11 @@ ThreadingProcessSubprocessExample App     Pass            2019-04-02
 Viessmann-boiler-monitoring       App     Pass            2019-04-02
 ```
 
-## Report usage
+## Check usage
 
-The report starts by identifying if the project is a package or an application by checking the project structure.
+The `check` starts by identifying if the project to check is a package or an application by analysing the project composition.
 
-Example of a report content in case of a package:
+Example of a check result in case of a package:
 
 1. Project type: package
 2. Structure conformity: Pass
@@ -119,36 +151,13 @@ Example of a report content in case of a package:
    3. `README.md`: Pass
    4. `setup.py`: Pass
    5. package_name
-      3. `__info__.py`: Pass
-      1. `__init__.py`: Pass
-      2. `__main__.py`: Pass
+      1. `__info__.py`: Pass
+      2. `__init__.py`: Pass
+      3. `__main__.py`: Pass
+      4. `api.py`: Pass
+      5. `display.py`: Pass
+      6. `exceptions.py`: Pass
 4. Git repository
    1. Local repository presence: Pass
    2. Remote repository presence: Pass
    3. Git status: Pass
-
-## Project structure for a package
-
-- venv
-- src
-  - .git
-  - templated_package
-    - `__info__.py`
-    - `__init__.py`
-    - `__main__.py`
-  - `.gitignore`
-  - `LICENSE`
-  - `README.md`
-  - `setup.py`
-
-## Project structure for an app
-
-- venv
-- src
-  - .git
-  - templated_package
-    - `__info__.py`
-    - `main.py`
-  - `.gitignore`
-  - `LICENSE`
-  - `README.md`
