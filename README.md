@@ -112,13 +112,13 @@ This command lists all projects and analyze if it is a package or an app.
 It also give the git status.
 
 1. Project type: { unknown | package | app }
-2. Git status  : { local repository not found | remote repository not found | uncommitted changes | ok }
+2. Git status  : { local repository not found | remote repository not found | uncommitted changes | remote outdated | ok }
 
 ```bash
 (venv) C:\Users\Adrien>ppm list
 Project                           Type    Git status
 --------------------------------- ------- ----------
-AllMyRunkeeperOnGoogleMaps        Package ok
+AllMyRunkeeperOnGoogleMaps        Package remote outdated
 ClientServerSocketExample         Unknown ok
 DjangoChannels                    Package uncommitted changes
 fauconblommaert_website           App     uncommitted changes
