@@ -1,4 +1,5 @@
 import os
+import subprocess
 import ppm
 import ppm.exceptions
 import ppm.checker
@@ -20,4 +21,4 @@ def list():
     return ret_val
 
 def develop(program, project_name):
-    raise ppm.exceptions.NotYetImplementedException
+    subprocess.run(["Code", "."], cwd=ppm.python_projects_path / project_name, shell=True)

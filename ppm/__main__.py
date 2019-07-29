@@ -39,9 +39,6 @@ def main_procedure():
     if args.command == "list":
         projects_list = ppm.api.list()
         ppm.display.after_list(projects_list)
-    if args.command == "check":
-        report = ppm.api.check(args.name)
-        ppm.display.after_check(report)
     if args.command == "develop":
         ppm.api.develop(args.program, args.name)
         ppm.display.after_develop()
