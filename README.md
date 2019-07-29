@@ -53,7 +53,6 @@ print(ppm.__version__)
 ppm.create_package("package_name")
 ppm.create_app("application_name")
 ppm.list()
-ppm.check("package_name or application_name")
 ppm.develop("vscode", "package_name or application_name")
 ```
 
@@ -63,7 +62,6 @@ With the command line interface:
 (venv) C:\Users\Adrien>python -m ppm create package package_name
 (venv) C:\Users\Adrien>python -m ppm create app application_name
 (venv) C:\Users\Adrien>python -m ppm list
-(venv) C:\Users\Adrien>python -m ppm check [package_name|application_namme]
 (venv) C:\Users\Adrien>python -m ppm develop vscode [package_name|application_namme]
 ```
 
@@ -73,7 +71,6 @@ Or directly:
 (venv) C:\Users\Adrien>ppm create package package_name
 (venv) C:\Users\Adrien>ppm create app application_name
 (venv) C:\Users\Adrien>ppm list
-(venv) C:\Users\Adrien>ppm check [package_name|application_namme]
 (venv) C:\Users\Adrien>ppm devlop vscode [package_name|application_namme]
 ```
 
@@ -111,53 +108,34 @@ Or directly:
 
 ## List usage
 
+This command lists all projects and analyze if it is a package or an app.
+It also give the git status.
+
+1. Project type: { unknown | package | app }
+2. Git status  : { local repository not found | remote repository not found | uncommitted changes | ok }
+
 ```bash
 (venv) C:\Users\Adrien>ppm list
-Project                           Type    Coherency check Last commit
----------------------------------------------------------------------
-AllMyRunkeeperOnGoogleMaps        Package Pass            2019-04-02
-ClientServerSocketExample         Package Failed          2019-04-02
-DjangoChannels                    Package Pass            2019-04-02
-fauconblommaert_website           App     Pass            2019-04-02
-flasky                            App     Pass            2019-04-02
-GestionActions                    Package Pass            2019-04-02
-GetLabels_python                  App     Pass            2019-04-02
-git_test                          Package Pass            2019-04-02
-Google Apps Script                Package Pass            2019-04-02
-ImageMetadata                     App     Pass            2019-04-02
-ImageRenamer                      App     Pass            2019-04-02
-ImmowebTracker                    App     Pass            2019-04-02
-jokegetter                        App     Pass            2019-04-02
-ListeCadeaux                      App     Failed          2019-04-02
-Plan_electrique_maison            Package Pass            2019-04-02
-ppm                               Package Pass            2019-04-02
-templated_application             App     Pass            2019-04-02
-templated_package                 Package Pass            2019-04-02
-ThreadingProcessSubprocessExample App     Pass            2019-04-02
-Viessmann-boiler-monitoring       App     Pass            2019-04-02
+Project                           Type    Git status
+--------------------------------- ------- ----------
+AllMyRunkeeperOnGoogleMaps        Package ok
+ClientServerSocketExample         Unknown ok
+DjangoChannels                    Package uncommitted changes
+fauconblommaert_website           App     uncommitted changes
+flasky                            App     ok
+GestionActions                    Package ok
+GetLabels_python                  App     remote repository not found
+git_test                          Package remote repository not found
+Google Apps Script                Package ok
+ImageMetadata                     App     ok
+ImageRenamer                      App     ok
+ImmowebTracker                    App     ok
+jokegetter                        App     ok
+ListeCadeaux                      Unknown local repository not found
+Plan_electrique_maison            Package ok
+ppm                               Package ok
+templated_application             App     ok
+templated_package                 Package remote repository not found
+ThreadingProcessSubprocessExample App     ok
+Viessmann-boiler-monitoring       App     uncommitted changes
 ```
-
-## Check usage
-
-The `check` starts by identifying if the project to check is a package or an application by analysing the project composition.
-
-Example of a check result in case of a package:
-
-1. Project type: package
-2. Structure conformity: Pass
-3. Common files content
-   1. `.gitignore`: Pass
-   2. `LICENSE`: Pass
-   3. `README.md`: Pass
-   4. `setup.py`: Pass
-   5. package_name
-      1. `__info__.py`: Pass
-      2. `__init__.py`: Pass
-      3. `__main__.py`: Pass
-      4. `api.py`: Pass
-      5. `display.py`: Pass
-      6. `exceptions.py`: Pass
-4. Git repository
-   1. Local repository presence: Pass
-   2. Remote repository presence: Pass
-   3. Git status: Pass

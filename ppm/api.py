@@ -1,26 +1,23 @@
 import os
 import ppm
 import ppm.exceptions
+import ppm.checker
 
 
-def create_package(name):
+def create_package(project_name):
     raise ppm.exceptions.NotYetImplementedException
 
-def create_app(name):
+def create_app(project_name):
     raise ppm.exceptions.NotYetImplementedException
 
 def list():
     ret_val = []
-    for project in os.listdir(ppm.python_projects_path):
-        ret_val.append({"name":project,
-                        "type":"Not yet implemented",
-                        "coherency check":"Not yet implemented",
-                        "last commit":"Not yet implemented"})
+    for project_name in os.listdir(ppm.python_projects_path):
+        ret_val.append({'name':project_name,
+                        'type':ppm.checker.Checker(project_name).get_project_type(),
+                        'venv status':ppm.checker.Checker(project_name).get_venv_status(),
+                        'git status':ppm.checker.Checker(project_name).get_git_status()})
     return ret_val
 
-def check(name):
-    raise ppm.exceptions.NotYetImplementedException
-    return ""
-
-def develop(program, name):
+def develop(program, project_name):
     raise ppm.exceptions.NotYetImplementedException
