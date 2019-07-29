@@ -16,6 +16,7 @@ import pathlib
 python_projects_path = pathlib.Path(get_python_projects_path())
 
 
+from .__info__ import __package_name__
 from .__info__ import __description__
 from .__info__ import __url__
 from .__info__ import __version__
