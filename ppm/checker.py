@@ -70,9 +70,9 @@ class Checker():
         """
         """
         if not os.path.isdir(self.project_path / 'venv'):
-            return 'Not found'
+            return 'not found'
         else:
-            return 'Found'
+            return 'found'
 
     def get_git_status(self):
         """
