@@ -1,12 +1,13 @@
 import os
 import ppm
+import ppm.exceptions
 
 
 def create_package(name):
-    pass
+    raise ppm.exceptions.NotYetImplementedException
 
 def create_app(name):
-    pass
+    raise ppm.exceptions.NotYetImplementedException
 
 def list():
     ret_val = []
@@ -18,7 +19,7 @@ def list():
     return ret_val
 
 def report(name):
-    return "hello, world!"
+    raise ppm.exceptions.NotYetImplementedException
 
 def develop(program, name):
-    pass
+    raise ppm.exceptions.NotYetImplementedException

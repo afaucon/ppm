@@ -14,10 +14,15 @@ class BasePpmException(Exception):
 
 class UndefinedPythonProjectsPath(BasePpmException):
     """
-    The PYTON_PRJ environment variable is not declared.
+    PYTON_PRJ environment variable is not declared.
     """
 
 class PythonProjectsPathDoesNotExist(BasePpmException):
     """
-    Write a description
+    PYTON_PRJ environment variable does not contain a valid directory path.
+    """
+
+class NotYetImplementedException(BasePpmException):
+    """
+    This exception is raised when attempting to reach code that has not yet been implemented.
     """
