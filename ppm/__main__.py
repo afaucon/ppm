@@ -1,6 +1,7 @@
 import argparse
 
 import ppm.api
+import ppm.display
 
 
 def main_procedure():
@@ -31,16 +32,19 @@ def main_procedure():
     if args.command == "create":
         if args.type == "package":
             ppm.api.create_package(args.name)
+            ppm.display.after_create_package("Package '{}' suscessfully created.".format(args.name))
         if args.type == "app":
-            ppm.api.create_application(args.name)
+            ppm.api.create_app(args.name)
+            ppm.display.after_create_app("App '{}' suscessfully created.".format(args.name))
     if args.command == "list":
         projects_list = ppm.api.list()
-        for project in projects_list:
-            print(project)
+        ppm.display.after_list(projects_list)
     if args.command == "report":
-        ppm.api.report(args.name)
+        report = ppm.api.report(args.name)
+        ppm.display.after_report(report)
     if args.command == "develop":
         ppm.api.develop(args.program, args.name)
+        ppm.display.after_develop()
 
 if __name__ == "__main__":
     main_procedure()

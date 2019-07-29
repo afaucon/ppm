@@ -3,16 +3,22 @@ import ppm
 
 
 def create_package(name):
-    print("hello, world!")
+    pass
 
-def create_application(name):
-    print("hello, world!")
+def create_app(name):
+    pass
 
 def list():
-    return os.listdir(ppm.python_projects_path)
+    ret_val = []
+    for project in os.listdir(ppm.python_projects_path):
+        ret_val.append({"name":project,
+                        "type":"Not yet implemented",
+                        "coherency check":"Not yet implemented",
+                        "last commit":"Not yet implemented"})
+    return ret_val
 
 def report(name):
-    print("hello, world!")
+    return "hello, world!"
 
 def develop(program, name):
-    print("hello, world!")
+    pass

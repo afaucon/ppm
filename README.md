@@ -51,7 +51,7 @@ print(ppm.__author__)
 print(ppm.__version__)
 
 ppm.create_package("package_name")
-ppm.create_application("application_name")
+ppm.create_app("application_name")
 ppm.list()
 ppm.report("package_name or application_name")
 ppm.develop("vscode", "package_name or application_name")
