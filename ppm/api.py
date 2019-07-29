@@ -18,8 +18,9 @@ def list():
                         "last commit":"Not yet implemented"})
     return ret_val
 
-def report(name):
+def check(name):
     raise ppm.exceptions.NotYetImplementedException
+    return ""
 
 def develop(program, name):
     raise ppm.exceptions.NotYetImplementedException

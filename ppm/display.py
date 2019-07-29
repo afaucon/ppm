@@ -35,7 +35,7 @@ def after_list(projects_list):
         print('{info:{width}}'.format(info=project['coherency check'], width=size['coherency check']), end=' ')
         print('{info:{width}}'.format(info=project['last commit'],     width=size['last commit']),     end='\n')
         
-def after_report(report):
+def after_check(report):
     print("Report display not yet implemented")
 
 def after_develop():

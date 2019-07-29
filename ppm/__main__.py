@@ -18,9 +18,9 @@ def main_procedure():
     # List command
     subparsers.add_parser('list')
 
-    # Report command
-    parser_report = subparsers.add_parser('report')
-    parser_report.add_argument('name')
+    # Check command
+    parser_check = subparsers.add_parser('check')
+    parser_check.add_argument('name')
 
     # Develop command
     parser_vscode = subparsers.add_parser('develop')
@@ -39,9 +39,9 @@ def main_procedure():
     if args.command == "list":
         projects_list = ppm.api.list()
         ppm.display.after_list(projects_list)
-    if args.command == "report":
-        report = ppm.api.report(args.name)
-        ppm.display.after_report(report)
+    if args.command == "check":
+        report = ppm.api.check(args.name)
+        ppm.display.after_check(report)
     if args.command == "develop":
         ppm.api.develop(args.program, args.name)
         ppm.display.after_develop()
