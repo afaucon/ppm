@@ -1,9 +1,3 @@
-def after_create_package(message):
-    print(message)
-
-def after_create_app(message):
-    print(message)
-
 def after_list(projects_list):
     size = {'name':0,
             'type':0,
@@ -35,6 +29,3 @@ def after_list(projects_list):
         print('{info:{width}}'.format(info=project['type'],        width=size['type']),        end='  ')
         print('{info:{width}}'.format(info=project['venv status'], width=size['venv status']), end='  ')
         print('{info:{width}}'.format(info=project['git status'],  width=size['git status']),  end='\n')
-
-def after_develop():
-    pass

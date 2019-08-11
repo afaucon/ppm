@@ -4,7 +4,32 @@ import ppm.api
 import ppm.display
 
 
+def command_create_package(project_name, package_name, description, url, author, author_email):
+    """
+    """
+    ppm.api.create_package(project_name, package_name, description, url, author, author_email)
+    print("Package '{}' suscessfully created.".format(project_name))
+
+def command_create_app(project_name, package_name, description, url, author, author_email):
+    """
+    """
+    ppm.api.create_app(project_name, package_name, description, url, author, author_email)
+    print("App '{}' suscessfully created.".format(project_name))
+
+def command_list():
+    """
+    """
+    projects_list = ppm.api.list()
+    ppm.display.after_list(projects_list)
+
+def command_open_visual_studio_code(project_name):
+    """
+    """
+    ppm.api.open_visual_studio_code(project_name)
+
 def main_procedure():
+    """
+    """
     parser = argparse.ArgumentParser(prog=ppm.__info__.__package_name__, 
                                      description=ppm.__info__.__description__)
 
@@ -24,24 +49,19 @@ def main_procedure():
 
     # Develop command
     parser_vscode = subparsers.add_parser('develop')
-    parser_vscode.add_argument('program')
     parser_vscode.add_argument('name')
 
     args = parser.parse_args()
 
     if args.command == "create":
         if args.type == "package":
-            ppm.api.create_package(args.name)
-            ppm.display.after_create_package("Package '{}' suscessfully created.".format(args.name))
-        if args.type == "app":
-            ppm.api.create_app(args.name)
-            ppm.display.after_create_app("App '{}' suscessfully created.".format(args.name))
+            command_create_package(args.name)
+        else:
+            command_create_app(args.name)
     if args.command == "list":
-        projects_list = ppm.api.list()
-        ppm.display.after_list(projects_list)
+        command_list()
     if args.command == "develop":
-        ppm.api.develop(args.program, args.name)
-        ppm.display.after_develop()
+        command_open_visual_studio_code(args.name)
 
 if __name__ == "__main__":
     main_procedure()

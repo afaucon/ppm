@@ -1,6 +1,8 @@
 import os.path
 import subprocess
 import ppm
+import ppm.exceptions
+import ppm.tool
 
 
 class Checker():
@@ -13,73 +15,30 @@ class Checker():
         self.result = {'type':'',
                        'git status':''}
 
-    def get_project_type(self):
+    def check_structure_consistency(self):
         """
-        ## Project structure for a package
-
-        - src
-          - package_name
-            - `__info__.py`
-            - `__init__.py`
-            - `__main__.py`
-            - `api.py`
-            - `display.py`
-            - `exceptions.py`
-          - `.gitignore`
-          - `LICENSE`
-          - `README.md`
-          - `setup.py`
-
-        ## Project structure for an app
-
-        - src
-          - app_name
-            - `__info__.py`
-            - `main.py`
-            - `exceptions.py`
-          - `.gitignore`
-          - `LICENSE`
-          - `README.md`
         """
+        project_type = ppm.tool.get_project_type(self.project_path, self.project_name)
+        if project_type != 'package' and project_type != 'app':
+            raise ppm.exceptions.ProjectStructureInconsistencyException
 
-        if (    os.path.isfile(self.project_path / 'src' / self.project_name / '__info__.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / '__init__.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / '__main__.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / 'api.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / 'display.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / 'exceptions.py')
-            and os.path.isfile(self.project_path / 'src/.gitignore')
-            and os.path.isfile(self.project_path / 'src/LICENSE')
-            and os.path.isfile(self.project_path / 'src/README.md')
-            and os.path.isfile(self.project_path / 'src/setup.py')):
-
-            return 'package'
-
-        if (    os.path.isfile(self.project_path / 'src' / self.project_name / '__info__.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / 'main.py')
-            and os.path.isfile(self.project_path / 'src' / self.project_name / 'exceptions.py')
-            and os.path.isfile(self.project_path / 'src/.gitignore')
-            and os.path.isfile(self.project_path / 'src/LICENSE')
-            and os.path.isfile(self.project_path / 'src/README.md')):
-            
-            return 'app'
-
-        return 'unknown'
-
-    def get_venv_status(self):
+    def check_virtual_environment(self):
         """
         """
         if not os.path.isdir(self.project_path / 'venv'):
-            return 'not found'
-        else:
-            return 'found'
+            raise ppm.exceptions.ProjectVirtualEnvironmentNotFoundException
+
+    def check_local_repository(self):
+        """
+        """
+        if not os.path.isdir(self.project_path / 'src/.git'):
+            raise ppm.exceptions.ProjectLocalRepositoryNotFoundException
+
+
 
     def get_git_status(self):
         """
         """
-        if not os.path.isdir(self.project_path / 'src/.git'):
-            return 'local repository not found'
-        else:
             cp = subprocess.run(["git", "remote"], cwd=self.project_path / 'src', capture_output=True)
             
             if "origin" not in cp.stdout.decode('UTF-8'):
