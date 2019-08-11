@@ -39,6 +39,11 @@ def main_procedure():
     parser_create = subparsers.add_parser('create')
     parser_create.add_argument('type', choices=['package', 'app'])
     parser_create.add_argument('name')
+    parser_create.add_argument('--project_name', action='store')
+    parser_create.add_argument('--description', action='store')
+    parser_create.add_argument('--url', action='store')
+    parser_create.add_argument('--author', action='store')
+    parser_create.add_argument('--author_email', action='store')
 
     # List command
     subparsers.add_parser('list')
@@ -55,9 +60,9 @@ def main_procedure():
 
     if args.command == "create":
         if args.type == "package":
-            command_create_package(args.name)
+            command_create_package(args.project_name, args.name, args.description, args.url, args.author, args.author_email)
         else:
-            command_create_app(args.name)
+            command_create_app(args.project_name, args.name, args.description, args.url, args.author, args.author_email)
     if args.command == "list":
         command_list()
     if args.command == "develop":
