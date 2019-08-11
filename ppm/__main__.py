@@ -1,7 +1,11 @@
 import argparse
 
-import ppm.api
-import ppm.display
+# ONLY ppm can be imported
+# because we are in the __main__.py, 
+# i.e. like if we are outside of the package/app !!!
+import ppm
+# import ppm.api
+# import ppm.display
 
 
 def command_create_package(project_name, package_name, description, url, author, author_email):
