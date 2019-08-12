@@ -1,3 +1,5 @@
+import os.path
+from pathlib import Path
 import git
 import ppm.exceptions
 
@@ -6,10 +8,17 @@ class Project:
     """
     """
 
-    def __init__(self, project_name, description, url, author, author_email):
+    def __init__(self, name, title, description, url, author, author_email):
         """
         """
-        pass
+        self.name = name
+        self.title = title
+        self.description = description
+        self.url = url
+        self.author = author
+        self.author_email = author_email
+        
+        self.path = ppm.python_projects_path / name
 
     def create(self):
         """
@@ -28,32 +37,35 @@ class Project:
         
         create_repository(self)
 
-class Package(Project):
-    """
-    """
+    def required_files(self):
+        """
+        """
+        return (Path('src') / self.name / '__info__.py',
+                Path('src') / self.name / 'exceptions.py',
+                Path('src') / '.gitignore',
+                Path('src') / 'LICENSE',
+                Path('src') / 'README.md')
 
-    def __init__(self, project_name, package_name, description, url, author, author_email):
+    def missing_files(self):
         """
         """
-        Project.__init__(self, project_name, description, url, author, author_email)
-        raise ppm.exceptions.NotYetImplementedException
+        the_missing_files = []
+        for file in self.required_files():
+            if not os.path.isfile(file):
+                the_missing_files.append(file)
+        return the_missing_files
 
-    def create(self):
+    def required_directories(self):
         """
         """
-        raise ppm.exceptions.NotYetImplementedException
+        return (Path('src') / '.git',
+                Path('venv'))
 
-class App(Project):
-    """
-    """
-
-    def __init__(self, project_name, app_name, description, url, author, author_email):
+    def missing_directories(self):
         """
         """
-        Project.__init__(self, project_name, description, url, author, author_email)
-        raise ppm.exceptions.NotYetImplementedException
-
-    def create(self):
-        """
-        """
-        raise ppm.exceptions.NotYetImplementedException
+        the_missing_directories = []
+        for file in self.required_files():
+            if not os.path.isdir(file):
+                the_missing_directories.append(file)
+        return the_missing_directories
