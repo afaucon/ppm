@@ -27,14 +27,15 @@ def command_list():
     projects_list = []
     for project_name in os.listdir(ppm.python_projects_path):
 
-        # Create the checker for the project
-        checker = ppm.Checker(project_name)
-
         # Check the project type
         project_type = 'unknown'
-        if isinstance(project, ppm.Package):
+        
+        checker = ppm.Checker(project_name, ppm.PACKAGE)
+        if len(checker.missing_files()) == 0:
             project_type = 'package'
-        if isinstance(project, ppm.App):
+        
+        checker = ppm.Checker(project_name, ppm.APP)
+        if len(checker.missing_files()) == 0:
             project_type = 'app'
 
         projects_list.append({'name':project_name,
@@ -62,7 +63,7 @@ def command_list():
 def command_status(project_name):
     """
     """
-    checker = ppm.Checker(project_name)
+    checker = ppm.Checker(project_name, ppm.PACKAGE)
     
 def command_open_visual_studio_code(project_name):
     """
@@ -93,9 +94,9 @@ def main_procedure():
     # List command
     subparsers.add_parser('list')
 
-    # Check command
-    parser_check = subparsers.add_parser('check')
-    parser_check.add_argument('name')
+    # Status command
+    parser_status = subparsers.add_parser('status')
+    parser_status.add_argument('name')
 
     # Develop command
     parser_vscode = subparsers.add_parser('develop')
@@ -110,6 +111,8 @@ def main_procedure():
             command_create_app(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
     if args.command == "list":
         command_list()
+    if args.command == "status":
+        command_status(args.name)
     if args.command == "develop":
         command_open_visual_studio_code(args.name)
 

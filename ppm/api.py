@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import subprocess
 import ppm
 import ppm.project
@@ -23,10 +24,12 @@ class Package(ppm.project.Project):
     def required_files(self):
         """
         """
-        return ('src' / self.name / '__init__.py',
-                'src' / self.name / '__main__.py',
-                'src' / self.name / 'api.py',
-                'src/setup.py')
+        return ppm.project.Project.required_files(self) + \
+               (Path('src') / self.name / '__init__.py',
+                Path('src') / self.name / '__main__.py',
+                Path('src') / self.name / 'api.py',
+                Path('src') / 'setup.py',
+                )
 
     def missing_files(self):
         """
@@ -54,24 +57,33 @@ class App(ppm.project.Project):
     def required_files(self):
         """
         """
-        return ('src' / self.name / 'main.py',)
+        return ppm.project.Project.required_files(self) + \
+            (Path('src') / self.name / 'main.py',
+            )
+
+PACKAGE = 'package'
+APP = 'app'
+
+class Checker():
+
+    def __init__(self, project_name, type):
+        """
+        """
+        if type is PACKAGE:
+            self.project = Package(project_name)
+        else:
+            self.project = App(project_name)
 
     def missing_files(self):
         """
         """
-        the_missing_files = ppm.project.Project.missing_files(self)
-        for file in self.required_files():
-            if not os.path.isfile(file):
-                the_missing_files.append(file)
+        the_missing_files = []
+        for required_file in self.project.required_files():
+            if not os.path.isfile(required_file):
+                the_missing_files.append(required_file)
         return the_missing_files
 
-class Checker():
 
-    def __init__(self, project):
-        """
-        """
-        self.project = project
-        self.project_path = ppm.python_projects_path / project.name
 
     def check_virtual_environment(self):
         """
