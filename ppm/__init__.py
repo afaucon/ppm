@@ -27,4 +27,4 @@ from .__info__ import __copyright__
 
 
 from .api import Package, App
-from .api import get_project
+from .api import Checker

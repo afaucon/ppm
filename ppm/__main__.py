@@ -27,9 +27,11 @@ def command_list():
     projects_list = []
     for project_name in os.listdir(ppm.python_projects_path):
 
+        # Create the checker for the project
+        checker = ppm.Checker(project_name)
+
         # Check the project type
         project_type = 'unknown'
-        project = ppm.get_project(project_name)
         if isinstance(project, ppm.Package):
             project_type = 'package'
         if isinstance(project, ppm.App):
@@ -60,12 +62,7 @@ def command_list():
 def command_status(project_name):
     """
     """
-    package = Package(project_name)
-    app = App(project_name)
-    if not isinstance(project, ppm.Package) and not isinstance(project, ppm.App):
-        print(project_name + " is neither a package, neither an app.")
-        print("Missing item to form a package:")
-        print_missing()
+    checker = ppm.Checker(project_name)
     
 def command_open_visual_studio_code(project_name):
     """
