@@ -23,45 +23,72 @@ def command_create_app(app_name, project_title, description, url, author, author
 
 def command_list():
     """
-    """
+    """    
+
+    def git_status_summary(git_status_as_string):
+        """
+        """
+        if git_status_as_string is None:
+            return "No git status"
+
+        if (   "Changes not staged for commit" in git_status_as_string
+            or "Changes to be committed"       in git_status_as_string):
+            return "uncommitted changes"
+            
+        if "Your branch is ahead of " in git_status_as_string:
+            return "remote outdated"
+            
+        if "nothing to commit, working directory clean" in git_status_as_string:
+            return "ok"
+            
+        return "???"
+
     projects_list = []
     for project_name in os.listdir(ppm.python_projects_path):
 
         checker = ppm.Checker(project_name)
 
-        if len(checker.missing_directories()) != 0:
-            project_status = 'missing directories'
-        else:
-            project_status = 'missing files'
-            if len(checker.missing_files(ppm.PACKAGE)) == 0:
-                project_status = 'valid package'
-            
-            if len(checker.missing_files(ppm.APP)) == 0:
-                project_status = 'valid app'
+        project_status = 'missing directories or files'
+        if len(checker.missing_directories(ppm.PACKAGE)) and len(checker.missing_files(ppm.PACKAGE)) == 0:
+            project_status = 'valid package'
+        
+        if len(checker.missing_directories(ppm.APP)) and len(checker.missing_files(ppm.APP)) == 0:
+            project_status = 'valid app'
 
-        projects_list.append({'name':project_name,
-                              'status':project_status})
+        projects_list.append(
+            {
+                'name':project_name,
+                'status':project_status,
+                'git':git_status_summary(ppm.get_git_status_as_string(project_name)),
+            }
+        )
             
     size = {'name':0,
-            'status':0}
+            'status':0,
+            'git':0}
 
     for project in projects_list:
         if size['name'] < len(project['name']):
             size['name'] = len(project['name'])
         if size['status'] < len(project['status']):
             size['status'] = len(project['status'])
+        if size['git'] < len(project['git']):
+            size['git'] = len(project['git'])
 
     print('{info:{width}}'.format(info='Project name', width=size['name']),   end='  ')
-    print('{info:{width}}'.format(info='status',       width=size['status']), end='\n')
+    print('{info:{width}}'.format(info='status',       width=size['status']), end='  ')
+    print('{info:{width}}'.format(info='git',          width=size['git']),    end='\n')
 
     print('{info:-<{width}}'.format(info='', width=size['name']),   end='  ')
-    print('{info:-<{width}}'.format(info='', width=size['status']), end='\n')
+    print('{info:-<{width}}'.format(info='', width=size['status']), end='  ')
+    print('{info:-<{width}}'.format(info='', width=size['git']),    end='\n')
 
     for project in projects_list:
         print('{info:{width}}'.format(info=project['name'],   width=size['name']),   end='  ')
-        print('{info:{width}}'.format(info=project['status'], width=size['status']), end='\n')
+        print('{info:{width}}'.format(info=project['status'], width=size['status']), end='  ')
+        print('{info:{width}}'.format(info=project['git'],    width=size['git']),    end='\n')
 
-def command_status(project_name):
+def command_check_all(project_name):
     """
     """
     checker = ppm.Checker(project_name)
@@ -69,13 +96,18 @@ def command_status(project_name):
     def check_project_structure():
         """
         """
-        missing_directories = checker.missing_directories()
-        if len(missing_directories) == 0:
+        missing_directories_for_package = checker.missing_directories(ppm.PACKAGE)
+        missing_directories_for_app = checker.missing_directories(ppm.APP)
+        
+        if len(missing_directories_for_package) == 0 or len(missing_directories_for_app) == 0:
             result = 'Pass'
             return result, True
         else:
             result = 'Failed'
-            result = result + '\n' + '\n' + 'Missing directories:\n' + '\n- '.join(missing_directories)
+            if len(missing_directories_for_package) > 0:
+                result = result + '\n' + '\n' + 'Missing directories for package:\n' + '\n'.join(['- {}'.format(dir) for dir in missing_directories_for_package])
+            if len(missing_directories_for_app) > 0:
+                result = result + '\n' + '\n' + 'Missing directories for app:\n' + '\n'.join(['- {}'.format(dir) for dir in missing_directories_for_app])
             return result, False
     
     def check_project_files():
@@ -101,7 +133,7 @@ def command_status(project_name):
     print(result)
     if not step_ok:
         return
-        
+    
     print("Checking project files: ", end = '')
     result, step_ok = check_project_files()
     print(result)
