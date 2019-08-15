@@ -54,26 +54,36 @@ class App(ppm.project.Project):
 
 PACKAGE = 'package'
 APP = 'app'
+GENERIC = 'generic'
 
 class Checker():
 
-    def __init__(self, project_name, type):
+    def __init__(self, project_name):
+        """
+        """
+        self.project_name = project_name
+
+    def __project(self, type=GENERIC):
         """
         """
         if type is PACKAGE:
-            self.project = Package(project_name)
+            return Package(self.project_name)
+        elif type is APP:
+            return App(self.project_name)
         else:
-            self.project = App(project_name)
+            return ppm.project.Project(self.project_name)
 
     def missing_directories(self):
         """
         """
-        return [str(dir) for dir in sorted(self.project.required_directories()) if not os.path.isdir(self.project.path / dir)] 
+        project = self.__project()
+        return [str(dir) for dir in sorted(project.required_directories()) if not os.path.isdir(project.path / dir)] 
 
-    def missing_files(self):
+    def missing_files(self, type):
         """
         """
-        return [str(file) for file in sorted(self.project.required_files()) if not os.path.isfile(self.project.path / file)]
+        project = self.__project(type)
+        return [str(file) for file in sorted(project.required_files()) if not os.path.isfile(project.path / file)]
 
 
 

@@ -8,7 +8,7 @@ class Project:
     """
     """
 
-    def __init__(self, name, title, description, url, author, author_email):
+    def __init__(self, name='', title='', description='', url='', author='', author_email=''):
         """
         """
         self.name = name

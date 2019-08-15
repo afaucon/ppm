@@ -27,59 +27,86 @@ def command_list():
     projects_list = []
     for project_name in os.listdir(ppm.python_projects_path):
 
-        # Check the project type
-        project_type = 'unknown'
-        
-        checker = ppm.Checker(project_name, ppm.PACKAGE)
-        if len(checker.missing_files()) == 0:
-            project_type = 'package'
-        
-        checker = ppm.Checker(project_name, ppm.APP)
-        if len(checker.missing_files()) == 0:
-            project_type = 'app'
+        checker = ppm.Checker(project_name)
+
+        if len(checker.missing_directories()) != 0:
+            project_status = 'missing directories'
+        else:
+            project_status = 'missing files'
+            if len(checker.missing_files(ppm.PACKAGE)) == 0:
+                project_status = 'valid package'
+            
+            if len(checker.missing_files(ppm.APP)) == 0:
+                project_status = 'valid app'
 
         projects_list.append({'name':project_name,
-                              'type':project_type})
+                              'status':project_status})
             
     size = {'name':0,
-            'type':0}
+            'status':0}
 
     for project in projects_list:
         if size['name'] < len(project['name']):
             size['name'] = len(project['name'])
-        if size['type'] < len(project['type']):
-            size['type'] = len(project['type'])
+        if size['status'] < len(project['status']):
+            size['status'] = len(project['status'])
 
-    print('{info:{width}}'.format(info='Project name', width=size['name']), end='  ')
-    print('{info:{width}}'.format(info='Type',         width=size['type']), end='\n')
+    print('{info:{width}}'.format(info='Project name', width=size['name']),   end='  ')
+    print('{info:{width}}'.format(info='status',       width=size['status']), end='\n')
 
-    print('{info:-<{width}}'.format(info='', width=size['name']), end='  ')
-    print('{info:-<{width}}'.format(info='', width=size['type']), end='\n')
+    print('{info:-<{width}}'.format(info='', width=size['name']),   end='  ')
+    print('{info:-<{width}}'.format(info='', width=size['status']), end='\n')
 
     for project in projects_list:
-        print('{info:{width}}'.format(info=project['name'], width=size['name']), end='  ')
-        print('{info:{width}}'.format(info=project['type'], width=size['type']), end='\n')
+        print('{info:{width}}'.format(info=project['name'],   width=size['name']),   end='  ')
+        print('{info:{width}}'.format(info=project['status'], width=size['status']), end='\n')
 
 def command_status(project_name):
     """
     """
-    checker = ppm.Checker(project_name, ppm.PACKAGE)
-    missing_directories = checker.missing_directories()
-    missing_files = checker.missing_files()
-    print()
-    print("Missing directories:")
-    print()
-    if len(missing_directories) == 0:
-        print("None")
-    else:
-        [print('- {}'.format(dir)) for dir in missing_directories]
-    print()
-    print("Missing files:")
-    print()
-    if len(missing_files) == 0:
-        print("None")
-    else:
-        [print('- {}'.format(file)) for file in missing_files]
+    checker = ppm.Checker(project_name)
+    
+    def check_project_structure():
+        """
+        """
+        missing_directories = checker.missing_directories()
+        if len(missing_directories) == 0:
+            result = 'Pass'
+            return result, True
+        else:
+            result = 'Failed'
+            result = result + '\n' + '\n' + 'Missing directories:\n' + '\n- '.join(missing_directories)
+            return result, False
+    
+    def check_project_files():
+        """
+        """
+        missing_files_for_package = checker.missing_files(ppm.PACKAGE)
+        missing_files_for_app = checker.missing_files(ppm.PACKAGE)
+
+        if len(missing_files_for_package) == 0 or len(missing_files_for_app) == 0:
+            result = 'Pass'
+            return result, True
+        else:
+            result = 'Failed'
+            if len(missing_files_for_package) > 0:
+                result = result + '\n' + '\n' + 'Missing files for package:\n' + '\n'.join(['- {}'.format(file) for file in missing_files_for_package])
+            if len(missing_files_for_app) > 0:
+                result = result + '\n' + '\n' + 'Missing files for app:\n' + '\n'.join(['- {}'.format(file) for file in missing_files_for_app])
+                
+            return result, False
+        
+    print("Checking project structure: ", end = '')
+    result, step_ok = check_project_structure()
+    print(result)
+    if not step_ok:
+        return
+        
+    print("Checking project files: ", end = '')
+    result, step_ok = check_project_files()
+    print(result)
+    if not step_ok:
+        return
     
 def command_open_visual_studio_code(project_name):
     """
@@ -99,7 +126,7 @@ def main_procedure():
 
     # Create command
     parser_create = subparsers.add_parser('create')
-    parser_create.add_argument('type', choices=['package', 'app'])
+    parser_create.add_argument('status', choices=['package', 'app'])
     parser_create.add_argument('name')
     parser_create.add_argument('--project_title', action='store')
     parser_create.add_argument('--description', action='store')
