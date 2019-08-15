@@ -37,35 +37,22 @@ class Project:
         
         create_repository(self)
 
-    def required_files(self):
-        """
-        """
-        return (Path('src') / self.name / '__info__.py',
-                Path('src') / self.name / 'exceptions.py',
-                Path('src') / '.gitignore',
-                Path('src') / 'LICENSE',
-                Path('src') / 'README.md')
-
-    def missing_files(self):
-        """
-        """
-        the_missing_files = []
-        for file in self.required_files():
-            if not os.path.isfile(file):
-                the_missing_files.append(file)
-        return the_missing_files
-
     def required_directories(self):
         """
         """
-        return (Path('src') / '.git',
-                Path('venv'))
+        return [
+            Path('src'),
+            Path('src') / '.git',
+            Path('venv'),
+        ]
 
-    def missing_directories(self):
+    def required_files(self):
         """
         """
-        the_missing_directories = []
-        for file in self.required_files():
-            if not os.path.isdir(file):
-                the_missing_directories.append(file)
-        return the_missing_directories
+        return [
+            Path('src') / self.name / '__info__.py',
+            Path('src') / self.name / 'exceptions.py',
+            Path('src') / '.gitignore',
+            Path('src') / 'LICENSE',
+            Path('src') / 'README.md',
+        ]

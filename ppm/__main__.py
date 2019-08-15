@@ -64,6 +64,22 @@ def command_status(project_name):
     """
     """
     checker = ppm.Checker(project_name, ppm.PACKAGE)
+    missing_directories = checker.missing_directories()
+    missing_files = checker.missing_files()
+    print()
+    print("Missing directories:")
+    print()
+    if len(missing_directories) == 0:
+        print("None")
+    else:
+        [print('- {}'.format(dir)) for dir in missing_directories]
+    print()
+    print("Missing files:")
+    print()
+    if len(missing_files) == 0:
+        print("None")
+    else:
+        [print('- {}'.format(file)) for file in missing_files]
     
 def command_open_visual_studio_code(project_name):
     """
