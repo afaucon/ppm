@@ -27,13 +27,10 @@ class Project:
         def create_repository(self):
             """
             """
-            # 1/ Clone the templated repository
-            # 2/ Create the new repository on github
-            # 3/ Update the 'remote' of the local repository
-            # 4/ Push the local repository to the distant repository
+            # - Create the new repository on github
+            # - Update the 'remote' of the local repository
+            # - Push the local repository to the distant repository
             raise ppm.exceptions.NotYetImplementedException
-            repo = git.Repo.clone_from("git@github.com:afaucon/templated_package.git", "C:/tmp")
-            print(repo.remotes.origin.refs.master)
         
         create_repository(self)
 

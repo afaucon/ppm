@@ -92,53 +92,18 @@ def command_check_all(project_name):
     """
     """
     checker = ppm.Checker(project_name)
-    
-    def check_project_structure():
-        """
-        """
-        missing_directories_for_package = checker.missing_directories(ppm.PACKAGE)
-        missing_directories_for_app = checker.missing_directories(ppm.APP)
-        
-        if len(missing_directories_for_package) == 0 or len(missing_directories_for_app) == 0:
-            result = 'Pass'
-            return result, True
-        else:
-            result = 'Failed'
-            if len(missing_directories_for_package) > 0:
-                result = result + '\n' + '\n' + 'Missing directories for package:\n' + '\n'.join(['- {}'.format(dir) for dir in missing_directories_for_package])
-            if len(missing_directories_for_app) > 0:
-                result = result + '\n' + '\n' + 'Missing directories for app:\n' + '\n'.join(['- {}'.format(dir) for dir in missing_directories_for_app])
-            return result, False
-    
-    def check_project_files():
-        """
-        """
-        missing_files_for_package = checker.missing_files(ppm.PACKAGE)
-        missing_files_for_app = checker.missing_files(ppm.PACKAGE)
-
-        if len(missing_files_for_package) == 0 or len(missing_files_for_app) == 0:
-            result = 'Pass'
-            return result, True
-        else:
-            result = 'Failed'
-            if len(missing_files_for_package) > 0:
-                result = result + '\n' + '\n' + 'Missing files for package:\n' + '\n'.join(['- {}'.format(file) for file in missing_files_for_package])
-            if len(missing_files_for_app) > 0:
-                result = result + '\n' + '\n' + 'Missing files for app:\n' + '\n'.join(['- {}'.format(file) for file in missing_files_for_app])
-                
-            return result, False
         
     print("Checking project structure: ", end = '')
-    result, step_ok = check_project_structure()
+    result, detail, step_ok = ppm.main.check_project_structure(checker)
     print(result)
-    if not step_ok:
-        return
     
     print("Checking project files: ", end = '')
-    result, step_ok = check_project_files()
+    result, detail, step_ok = ppm.main.check_project_files(checker)
     print(result)
-    if not step_ok:
-        return
+    
+    print("Checking git status: ", end = '')
+    result, detail, step_ok = ppm.main.check_git_status()
+    print(result)
     
 def command_open_visual_studio_code(project_name):
     """
