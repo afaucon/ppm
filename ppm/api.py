@@ -16,8 +16,8 @@ class Package(ppm.project.Project):
 
     def create(self):
         """
-        """
         - Fork the templated repository
+        """
         raise ppm.exceptions.NotYetImplementedException
     repo = git.Repo.clone_from("git@github.com:afaucon/templated_package.git", "C:/tmp")
     print(repo.remotes.origin.refs.master)

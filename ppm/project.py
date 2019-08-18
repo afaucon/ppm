@@ -1,6 +1,5 @@
 import os.path
 from pathlib import Path
-import git
 import ppm.exceptions
 
 
