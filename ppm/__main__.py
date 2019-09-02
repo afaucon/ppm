@@ -116,45 +116,101 @@ def command_open_visual_studio_code(project_name):
 def main_procedure():
     """
     """
+
+    """
+    ppm: Python projects manager
+    
+    ppm config --get name
+    ppm config --set name value
+    ppm config -l, --list
+    ppm create project-path template-git-path
+    ppm checkup project-path template-git-path
+    ppm develop project-name
+    ppm list
+    ppm gui
+
+    Possible configuation:
+    + Python project path
+    + Bookmarked git template path (local | github | bitbucket)
+    
+    Nouvelle architecture:
+    + Project-name
+    + Project-name
+        + __info__.py
+        + __init__.py
+        + __main__.py
+        + api.py
+    + venv
+    + .gitignore
+    + LICENSE
+    + README.md
+    + setup.py
+    """
+
     parser = argparse.ArgumentParser(prog=ppm.__info__.__package_name__, 
                                      description=ppm.__info__.__description__)
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command")
+
+    # Config command
+    parser_config = subparsers.add_parser('config')
+
+    group = parser_config.add_mutually_exclusive_group()
+    group.add_argument('--global', action='store_true')
+    group.add_argument('--project', '-p')
+
+    group = parser_config.add_mutually_exclusive_group()
+    group.add_argument('--list', '-l', action='store_true')
+    group.add_argument('--get', nargs=1, metavar='name')
+    group.add_argument('--set', nargs=2, metavar=('name', 'value'))
 
     # Create command
     parser_create = subparsers.add_parser('create')
-    parser_create.add_argument('status', choices=['package', 'app'])
-    parser_create.add_argument('name')
+    parser_create.add_argument('template-git-path')
+    parser_create.add_argument('project-name')
     parser_create.add_argument('--project_title', action='store')
     parser_create.add_argument('--description', action='store')
     parser_create.add_argument('--url', action='store')
     parser_create.add_argument('--author', action='store')
     parser_create.add_argument('--author_email', action='store')
 
-    # List command
-    subparsers.add_parser('list')
-
-    # Status command
-    parser_status = subparsers.add_parser('status')
-    parser_status.add_argument('name')
+    # Checkup command
+    parser_create = subparsers.add_parser('checkup')
+    parser_create.add_argument('template-git-path')
+    parser_create.add_argument('project-name')
 
     # Develop command
     parser_vscode = subparsers.add_parser('develop')
     parser_vscode.add_argument('name')
 
+    # General arguments
+    subparsers.add_parser('list')
+    subparsers.add_parser('gui')
+
     args = parser.parse_args()
 
-    if args.command == "create":
-        if args.type == "package":
-            command_create_package(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
-        else:
-            command_create_app(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
-    if args.command == "list":
-        command_list()
-    if args.command == "status":
-        command_status(args.name)
-    if args.command == "develop":
-        command_open_visual_studio_code(args.name)
+    if args.command == "config":
+        pass
 
-if __name__ == "__main__":
-    main_procedure()
+    if args.command == "create":
+        # if args.type == "package":
+        #     command_create_package(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
+        # else:
+        #    command_create_app(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
+        pass
+
+    if args.command == "checkup":
+        # command_status(args.name)
+        pass
+
+    if args.command == "develop":
+        # command_open_visual_studio_code(args.name)
+        pass
+
+    if args.command == "list":
+        # command_list()
+        pass
+
+    if args.command == "gui":
+        # command_list()
+        pass

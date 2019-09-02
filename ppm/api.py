@@ -19,8 +19,8 @@ class Package(ppm.project.Project):
         - Fork the templated repository
         """
         raise ppm.exceptions.NotYetImplementedException
-    repo = git.Repo.clone_from("git@github.com:afaucon/templated_package.git", "C:/tmp")
-    print(repo.remotes.origin.refs.master)
+        #repo = git.Repo.clone_from("git@github.com:afaucon/templated_package.git", "C:/tmp")
+        #print(repo.remotes.origin.refs.master)
 
     def required_files(self):
         """
