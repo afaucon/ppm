@@ -7,19 +7,6 @@ import subprocess
 import ppm
 
 
-def command_create_package(package_name, project_title, description, url, author, author_email):
-    """
-    """
-    package = ppm.Package(package_name, project_title, description, url, author, author_email)
-    package.create()
-    print("Package '{}' suscessfully created.".format(package_name))
-
-def command_create_app(app_name, project_title, description, url, author, author_email):
-    """
-    """
-    app = ppm.App(app_name, project_title, description, url, author, author_email)
-    app.create()
-    print("App '{}' suscessfully created.".format(app_name))
 
 def command_list():
     """
@@ -113,10 +100,14 @@ def command_open_visual_studio_code(project_name):
         raise ppm.exceptions.ProjectDoesNotExist
     subprocess.run(["Code", "."], cwd=project_path, shell=True)
 
-def main_procedure():
-    """
-    """
 
+
+def clone_temporary():
+    """
+    """
+    pass
+
+def define_basic_parser():
     """
     ppm: Python projects manager
     
@@ -147,10 +138,10 @@ def main_procedure():
     + setup.py
     """
 
-    parser = argparse.ArgumentParser(prog=ppm.__info__.__package_name__, 
-                                     description=ppm.__info__.__description__)
+    basic_parser = argparse.ArgumentParser(prog=ppm.__info__.__package_name__, 
+                                           description=ppm.__info__.__description__)
 
-    subparsers = parser.add_subparsers(dest="command")
+    subparsers = basic_parser.add_subparsers(dest="command")
 
     # Config command
     parser_config = subparsers.add_parser('config')
@@ -166,38 +157,68 @@ def main_procedure():
 
     # Create command
     parser_create = subparsers.add_parser('create')
-    parser_create.add_argument('template-git-path')
-    parser_create.add_argument('project-name')
-    parser_create.add_argument('--project_title', action='store')
-    parser_create.add_argument('--description', action='store')
-    parser_create.add_argument('--url', action='store')
-    parser_create.add_argument('--author', action='store')
-    parser_create.add_argument('--author_email', action='store')
+    parser_create.add_argument('template', help='Path of the git repository of the templated project')
+    parser_create.add_argument('name', help='Project name to create')
 
     # Checkup command
     parser_create = subparsers.add_parser('checkup')
-    parser_create.add_argument('template-git-path')
-    parser_create.add_argument('project-name')
+    parser_create.add_argument('template', help='Path of the git repository of the templated project')
+    parser_create.add_argument('name', help='Project name to check')
 
     # Develop command
     parser_vscode = subparsers.add_parser('develop')
-    parser_vscode.add_argument('name')
+    parser_vscode.add_argument('name', help='Project name to develop')
 
     # General arguments
     subparsers.add_parser('list')
     subparsers.add_parser('gui')
 
-    args = parser.parse_args()
+    # Return the basic parser
+    return basic_parser
+    
+def define_parser_for_create(basic_parser, project):
+    """
+    """
+    parser_for_create = argparse.ArgumentParser(parents=[basic_parser])
+
+    for argument in project.parameters:
+        parser_for_create.add_argument(argument.name, 
+                                       action='store',
+                                       default='""', 
+                                       help=argument.help, 
+                                       required=argument.required)
+    
+    return parser_for_create
+
+def main_procedure():
+    """
+    """
+
+    basic_parser = define_basic_parser()
+    
+    # Parse the command line
+    # Note: 'parse_known_args' method does not produce an error when unknown arguments are present
+    args, remaining_argv = basic_parser.parse_known_args()
 
     if args.command == "config":
         pass
 
     if args.command == "create":
-        # if args.type == "package":
-        #     command_create_package(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
-        # else:
-        #    command_create_app(args.name, args.project_title, args.description, args.url, args.author, args.author_email)
-        pass
+
+        project = ppm.Project(template_git_path=args.template, project_name=args.name)
+
+        parser_for_create = define_parser_for_create(basic_parser, project)
+
+        args = parser_for_create.parse_args(remaining_argv)
+
+        # Obsolete
+        package = ppm.Package(package_name, project_title, description, url, author, author_email)
+        package.create()
+        print("Package '{}' suscessfully created.".format(package_name))
+        
+        app = ppm.App(app_name, project_title, description, url, author, author_email)
+        app.create()
+        print("App '{}' suscessfully created.".format(app_name))
 
     if args.command == "checkup":
         # command_status(args.name)
