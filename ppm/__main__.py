@@ -102,12 +102,8 @@ def command_open_visual_studio_code(project_name):
 
 
 
-def clone_temporary():
-    """
-    """
-    pass
 
-def define_basic_parser():
+def basic_parser():
     """
     ppm: Python projects manager
     
@@ -158,7 +154,6 @@ def define_basic_parser():
     # Create command
     parser_create = subparsers.add_parser('create')
     parser_create.add_argument('template', help='Path of the git repository of the templated project')
-    parser_create.add_argument('name', help='Project name to create')
 
     # Checkup command
     parser_create = subparsers.add_parser('checkup')
@@ -176,17 +171,9 @@ def define_basic_parser():
     # Return the basic parser
     return basic_parser
     
-def define_parser_for_create(basic_parser, project):
+def creation_parser(basic_parser, project):
     """
     """
-    parser_for_create = argparse.ArgumentParser(parents=[basic_parser])
-
-    for argument in project.parameters:
-        parser_for_create.add_argument(argument.name, 
-                                       action='store',
-                                       default='""', 
-                                       help=argument.help, 
-                                       required=argument.required)
     
     return parser_for_create
 
@@ -194,31 +181,31 @@ def main_procedure():
     """
     """
 
-    basic_parser = define_basic_parser()
+    parser = basic_parser()
     
     # Parse the command line
     # Note: 'parse_known_args' method does not produce an error when unknown arguments are present
-    args, remaining_argv = basic_parser.parse_known_args()
+    args, remaining_argv = parser.parse_known_args()
 
     if args.command == "config":
         pass
 
     if args.command == "create":
 
-        project = ppm.Project(template_git_path=args.template, project_name=args.name)
+        template = ppm.Template(template_git_path=args.template)
 
-        parser_for_create = define_parser_for_create(basic_parser, project)
+        parser = argparse.ArgumentParser(parents=[basic_parser])
 
-        args = parser_for_create.parse_args(remaining_argv)
+        for argument in template.parameters:
+            parser.add_argument(argument.name, 
+                                action='store',
+                                default='""', 
+                                help=argument.help, 
+                                required=argument.required)
 
-        # Obsolete
-        package = ppm.Package(package_name, project_title, description, url, author, author_email)
-        package.create()
-        print("Package '{}' suscessfully created.".format(package_name))
-        
-        app = ppm.App(app_name, project_title, description, url, author, author_email)
-        app.create()
-        print("App '{}' suscessfully created.".format(app_name))
+        parser.parse_args(remaining_argv, namespace=template)
+
+        template.create_project()
 
     if args.command == "checkup":
         # command_status(args.name)
