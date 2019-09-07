@@ -26,6 +26,10 @@ from .__info__ import __license__
 from .__info__ import __copyright__
 
 
-from .api import Package, App
-from .api import Checker, PACKAGE, APP
-from .api import get_git_status_as_string
+# From old API
+from .api import Template
+
+# From old API
+# from .api import Package, App
+# from .api import Checker, PACKAGE, APP
+# from .api import get_git_status_as_string
