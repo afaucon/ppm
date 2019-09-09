@@ -170,12 +170,6 @@ def basic_parser():
 
     # Return the basic parser
     return basic_parser
-    
-def creation_parser(basic_parser, project):
-    """
-    """
-    
-    return parser_for_create
 
 def main_procedure():
     """
@@ -193,8 +187,9 @@ def main_procedure():
     if args.command == "create":
 
         template = ppm.Template(template_git_path=args.template)
-
-        parser = argparse.ArgumentParser(parents=[basic_parser])
+        
+        parser = argparse.ArgumentParser(parents=[parser],
+                                         add_help=False)
 
         for argument in template.parameters:
             parser.add_argument(argument.name, 
@@ -222,3 +217,6 @@ def main_procedure():
     if args.command == "gui":
         # command_list()
         pass
+
+
+main_procedure()

@@ -6,7 +6,7 @@ def fork_repository(repo_to_fork_path, new_repo_path):
     TO CHECK!
     Note: repo_to_fork_path can be:
     - https://github.com/afaucon/templated_package
-    - C:\Data\templated_package.git
+    - C:/Data/templated_package.git
     """
     
     # Initialize a new git
