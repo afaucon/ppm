@@ -1,26 +1,24 @@
 import git
 
 
+def clone(from_url, to_path):
+    """
+    """
+    git.Repo.clone_from(url=from_url, to_path=to_path)
+
 def fork_repository(repo_to_fork_path, new_repo_path):
     """
-    TO CHECK!
-    Note: repo_to_fork_path can be:
+    Note: repo_to_fork_path must be:
     - https://github.com/afaucon/templated_package
-    - C:/Data/templated_package.git
     """
-    
-    # Initialize a new git
-    # -> git init
-    r = git.Repo.init(new_repo_path)
 
-    # Add the repository to fork as an Upstream Remote
-    # -> git remote add upstream repo_to_fork_path
-    # References:
-    #   https://gitpython.readthedocs.io/en/stable/reference.html?highlight=add%20upstream#git.remote.Remote.add
-    #   https://gitpython.readthedocs.io/en/stable/reference.html?highlight=create_remote#git.repo.base.Repo.create_remote
-    remote = r.create_remote("upstream", url=repo_to_fork_path)
+    # Clone the git
+    clone(from_url=repo_to_fork_path, to_path=new_repo_path)
 
-    # Update the repository
-    # -> git pull upstream master
-    upstream = r.remotes.upstream
-    upstream.pull("+refs/heads/*:refs/remotes/upstream/*")
+    # Be careful: path must contain an existing .git folder.
+    repo = git.Repo(path=new_repo_path)
+
+    # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
+    # Rename the "origin" remote into 'upstream'
+    remote = git.remote.Remote(repo, 'origin')
+    remote.rename('upstream')
