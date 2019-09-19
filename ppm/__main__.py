@@ -186,17 +186,15 @@ def main_procedure():
 
     if args.command == "create":
 
-        template = ppm.Template(template_git_path=args.template)
+        template = ppm.Template(template_git_url=args.template)
         
         parser = argparse.ArgumentParser(parents=[parser],
                                          add_help=False)
 
-        for argument in template.parameters:
-            parser.add_argument(argument.name, 
+        for unknown_parameter in template.unknown_parameters_set:
+            parser.add_argument(unknown_parameter, 
                                 action='store',
-                                default='""', 
-                                help=argument.help, 
-                                required=argument.required)
+                                default='""')
 
         parser.parse_args(remaining_argv, namespace=template)
 
