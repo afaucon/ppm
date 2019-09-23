@@ -192,8 +192,9 @@ def main_procedure():
                                          add_help=False)
 
         for unknown_parameter in template.unknown_parameters_set:
-            parser.add_argument(unknown_parameter, 
+            parser.add_argument("--" + unknown_parameter, 
                                 action='store',
+                                required=False,
                                 default='""')
 
         parser.parse_args(remaining_argv, namespace=template)
