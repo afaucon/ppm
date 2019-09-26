@@ -105,23 +105,54 @@ def command_open_visual_studio_code(project_name):
 
 def basic_parser():
     """
-    ppm: Python projects manager
-    
-    ppm config --get name
-    ppm config --set name value
-    ppm config -l, --list
-    ppm create project-path template-git-path
-    ppm checkup project-path template-git-path
-    ppm develop project-name
-    ppm list
-    ppm gui
 
-    Possible configuation:
-    + Python project path
-    + Bookmarked git template path (local | github | bitbucket)
+    sta: Single template action
+        To get the list of the template parameters
+            mimic info --get-parameters template-git-path
+        To instanciate a template into a new project
+            mimic instanciate template-git-path instance-path
+        To check if a project is compliant with a template 
+            mimic checkup [OPTIONS] template-git-path instance-path
+              --only-in-template
+              --only-in-instance
+              --not-compliant
     
+    spa: Single project action
+        To start Visual Studio Code:
+            spa vscode project-path
+        To start Sourcetree:
+            spa sourcetree project-path
+
+    devdashm: Development dashboard configuration
+        There are 2 configuration files located in $home directory.
+        - .devdash/project-bkmk and to configurure bookmarked project:
+            devdash-c project-bkmk -a/--add    project-path shortname
+            devdash-c project-bkmk -l/--list
+            devdash-c project-bkmk -d/--delete shortname
+            devdash-c project-bkmk -g/--get    shortname
+        - .devdash/template-bkmk and to configure bookmarked template:
+            devdash-c template-bkmk -a/--add    template-git-path shortname
+            devdash-c template-bkmk -l/--list
+            devdash-c template-bkmk -d/--delete shortname
+            devdash-c template-bkmk -g/--get    shortname
+
+    xdevdash: Graphical development dashboard
+        To view all bookmarked projects
+            To add a new project to the bookmarked projects by requiring the project-path and its shortname to the user.
+            To select one of the bookmarked projects
+                To delete the selected project from the configuration of the bookmarked projects
+                To start the selected project in Visual Studio Code
+                To start the selected project in Sourcetree
+                To check if the selected project is compliant to its template
+
+        To view all bookmarked templates
+            To add a new template to the bookmarked templates by requiring the template-git-path and its shortname to the user.            
+            To select one of the bookmarked templates
+                To delete the selected template from the configuration of the bookmarked templates
+                To get the parameters list of the selected template
+                To instanciate the selected template into a new project by requiring the user to enter a project-path, a shortname and if this new project must be mookmarked.
+
     Nouvelle architecture:
-    + Project-name
     + Project-name
         + __info__.py
         + __init__.py
@@ -197,7 +228,11 @@ def main_procedure():
                                 required=False,
                                 default='""')
 
-        parser.parse_args(remaining_argv, namespace=template)
+        # Providing the 'template' as the 'namespace' parameter of 'parse_args'
+        # allows to auto-fill the template with new attributes that are derived
+        # from 'unknown_parameters_set'.
+        parameters = object()
+        args = parser.parse_args(remaining_argv, namespace=parameters)
 
         template.create_project()
 
