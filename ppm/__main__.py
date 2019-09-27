@@ -106,51 +106,44 @@ def command_open_visual_studio_code(project_name):
 def basic_parser():
     """
 
-    sta: Single template action
+    Operations on a template
         To get the list of the template parameters
-            mimic info --get-parameters template-git-path
+            template --get-parameters template-git-path
         To instanciate a template into a new project
-            mimic instanciate template-git-path instance-path
+            template --instanciate [-i] [-n] template-git-path [project-path]
+                -i: The template parameters will be requests to the user.
+                -n: The template parameters will stay generic
+                By default, all template parameters must be specified as optional parameters.
+
+    Checkup operation
         To check if a project is compliant with a template 
-            mimic checkup [OPTIONS] template-git-path instance-path
-              --only-in-template
-              --only-in-instance
-              --not-compliant
+            checkup [OPTIONS] template-git-path [project-path|shortname]
+                --only-in-template
+                --only-in-project
+                --not-compliant
     
-    spa: Single project action
-        To start Visual Studio Code:
-            spa vscode project-path
+    Operation on a project
+        To start Visual Studio Code de develop a project:
+            project --vscode [project-path|shortname]
         To start Sourcetree:
-            spa sourcetree project-path
+            project --sourcetree [project-path|shortname]
 
-    devdashm: Development dashboard configuration
-        There are 2 configuration files located in $home directory.
-        - .devdash/project-bkmk and to configurure bookmarked project:
-            devdash-c project-bkmk -a/--add    project-path shortname
-            devdash-c project-bkmk -l/--list
-            devdash-c project-bkmk -d/--delete shortname
-            devdash-c project-bkmk -g/--get    shortname
-        - .devdash/template-bkmk and to configure bookmarked template:
-            devdash-c template-bkmk -a/--add    template-git-path shortname
-            devdash-c template-bkmk -l/--list
-            devdash-c template-bkmk -d/--delete shortname
-            devdash-c template-bkmk -g/--get    shortname
+    Operation on all projects
+        There is a configuration file located in $home directory: .devdash/projects
+        To configurure bookmarked projects:
+            projects -a/--add    shortname [project-path]
+            projects -l/--list
+            projects -d/--delete shortname
+            projects -g/--get    shortname
 
-    xdevdash: Graphical development dashboard
-        To view all bookmarked projects
-            To add a new project to the bookmarked projects by requiring the project-path and its shortname to the user.
-            To select one of the bookmarked projects
-                To delete the selected project from the configuration of the bookmarked projects
-                To start the selected project in Visual Studio Code
-                To start the selected project in Sourcetree
-                To check if the selected project is compliant to its template
+    Operation on all templates
+        There is a configuration file located in $home directory: .devdash/templates
+        To configure bookmarked templates:
+            templates -a/--add    template-git-path shortname
+            templates -l/--list
+            templates -d/--delete shortname
+            templates -g/--get    shortname
 
-        To view all bookmarked templates
-            To add a new template to the bookmarked templates by requiring the template-git-path and its shortname to the user.            
-            To select one of the bookmarked templates
-                To delete the selected template from the configuration of the bookmarked templates
-                To get the parameters list of the selected template
-                To instanciate the selected template into a new project by requiring the user to enter a project-path, a shortname and if this new project must be mookmarked.
 
     Nouvelle architecture:
     + Project-name
