@@ -106,43 +106,70 @@ def command_open_visual_studio_code(project_name):
 def basic_parser():
     """
 
-    Operations on a template
-        To get the list of the template parameters
-            template --get-parameters template-git-path
-        To instanciate a template into a new project
-            template --instanciate [-i] [-n] template-git-path [project-path]
-                -i: The template parameters will be requests to the user.
-                -n: The template parameters will stay generic
-                By default, all template parameters must be specified as optional parameters.
+    Operation on a template
+    =======================
 
-    Checkup operation
-        To check if a project is compliant with a template 
-            checkup [OPTIONS] template-git-path [project-path|shortname]
-                --only-in-template
-                --only-in-project
-                --not-compliant
-    
+        ppm template
+        ------------
+            Usage: ppm template [OPTIONS] TEMPLATE_GIT_URL
+        
+                Gets the list of the template parameters.
+            
+            Options:
+                -lp, --list-parameters   Provide the list of the generic parameters
+                                          of the template.
+
+        ppm instanciate
+        ---------------
+            Usage: ppm instanciate [OPTIONS] TEMPLATE_GIT_URL [PROJECT_PATH]
+
+                Instanciates a template from TEMPLATE_GIT_URL into a new project at
+                PROJECT_PATH. Without any option, its is similar to git clone.
+
+            Options:
+                -c, --configuration-file FILE  json configuration file containing the value
+                                                to give to each generic parameter
+                -i, --interractive             Each generic parameters, whose values have
+                                                not been specified with the parameter file,
+                                                will be requested to the user. Each parameter
+                                                whose value has not been returned by the user
+                                                will take the value from the template.
+
     Operation on a project
+    ----------------------
+
+        To check if a project is compliant with a template 
+            ppm checkup [-t] [-p] [-d] template-git-path [project-path|shortname]
+                -t, --only-in-template
+                -p, --only-in-project
+                -d, --different
+
         To start Visual Studio Code de develop a project:
-            project --vscode [project-path|shortname]
+            ppm project --vscode [project-path|shortname]
+
         To start Sourcetree:
-            project --sourcetree [project-path|shortname]
+            ppm project --sourcetree [project-path|shortname]
 
     Operation on all projects
+    -------------------------
+
         There is a configuration file located in $home directory: .devdash/projects
         To configurure bookmarked projects:
-            projects -a/--add    shortname [project-path]
-            projects -l/--list
-            projects -d/--delete shortname
-            projects -g/--get    shortname
+            ppm projects -a/--add    shortname [project-path]
+            ppm projects -l/--list
+            ppm projects -d/--delete shortname
+            ppm projects -g/--get    shortname
 
     Operation on all templates
+    --------------------------
+
         There is a configuration file located in $home directory: .devdash/templates
         To configure bookmarked templates:
-            templates -a/--add    template-git-path shortname
-            templates -l/--list
-            templates -d/--delete shortname
-            templates -g/--get    shortname
+            ppm templates -a/--add    template-git-path shortname
+            ppm templates -l/--list
+            ppm templates -d/--delete shortname
+            ppm templates -g/--get    shortname
+
 
 
     Nouvelle architecture:
@@ -163,6 +190,18 @@ def basic_parser():
 
     subparsers = basic_parser.add_subparsers(dest="command")
 
+    # Template command
+    parser_template = subparsers.add_parser('merge')
+    groupA = parser_template.add_argument_group('When merge is on-going')
+    excl_group = groupA.add_mutually_exclusive_group(required=True)
+    excl_group.add_argument('--continue', action='store_true')
+    excl_group.add_argument('--abort', action='store_true')
+    excl_group.add_argument('--quit', action='store_true')
+    groupB = parser_template.add_argument_group('Start a merge')
+    groupB.add_argument('--no-commit', action='store_true')
+    groupB.add_argument('-m', metavar='<msg>')
+    groupB.add_argument('commit', metavar='<commit>')
+    
     # Config command
     parser_config = subparsers.add_parser('config')
 
