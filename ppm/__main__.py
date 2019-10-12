@@ -105,50 +105,82 @@ def command_open_visual_studio_code(project_name):
 
 def basic_parser():
     """
+        dpm
+    ===
+    
+    Usage: dpm [OPTIONS] COMMAND [ARGS]...
+    
+    Options:
+      --help  Show this message and exit.
+    
+    Commands:
+      checkup      Check if a project is compliant with a template.
+      ide          Launche an ide on a project.
+      instanciate  Instanciate a git template to create a new project into a...
+      template     Get information about a generic template.
+    
+    dpm template
+    ============
+    
+    Usage: dpm template [OPTIONS] GIT_TEMPLATE
+    
+      Get information about a generic template.
+    
+    Options:
+      -p, --parameters  Provide the list of the parameters of the template.
+      -v, --version     Provide the version of the template.
+      --help            Show this message and exit.
+    
+    dpm instanciate
+    ===============
+    
+    Usage: dpm instanciate [OPTIONS] GIT_TEMPLATE [PATH]
+    
+      Instanciate a git template to create a new project into a local path.
+      Without any option, its is similar to git clone.
+    
+    Options:
+      -c, --configuration-file FILE  Configure template parameters with a
+                                     configration file. This file must be json
+                                     formatted.
+      -i, --interractive             Prompt the user to enter a value for each
+                                     generic parameters, whose values have not
+                                     been specified with the parameter file. Each
+                                     parameter whose value has not been returned
+                                     by the user will take the value from the
+                                     template.
+      --help                         Show this message and exit.
+    
+    dpm checkup
+    ===========
+    
+    Usage: dpm checkup [OPTIONS] [PATH]
+    
+      Check if a project is compliant with a template.
+    
+    Options:
+      -t, --only-in-template  Return files that are in the template an not in the
+                              project.
+      -p, --only-in-project   Return files that are in the project an not in the
+                              template.
+      -d, --different         Return files that are different between the project
+                              and the template.
+      --help                  Show this message and exit.
+    
+    dpm ide
+    =======
+    
+    Usage: dpm ide [OPTIONS] [PATH]
+    
+      Launche an ide on a project.
+    
+    Options:
+      --vscode      Launche visual studio code.
+      --sourcetree  Launche sourcetree.
+      --help        Show this message and exit.
 
-    Operation on a template
-    =======================
 
-        ppm template
-        ------------
-            Usage: ppm template [OPTIONS] TEMPLATE_GIT_URL
-        
-                Gets the list of the template parameters.
-            
-            Options:
-                -lp, --list-parameters   Provide the list of the generic parameters
-                                          of the template.
-
-        ppm instanciate
-        ---------------
-            Usage: ppm instanciate [OPTIONS] TEMPLATE_GIT_URL [PROJECT_PATH]
-
-                Instanciates a template from TEMPLATE_GIT_URL into a new project at
-                PROJECT_PATH. Without any option, its is similar to git clone.
-
-            Options:
-                -c, --configuration-file FILE  json configuration file containing the value
-                                                to give to each generic parameter
-                -i, --interractive             Each generic parameters, whose values have
-                                                not been specified with the parameter file,
-                                                will be requested to the user. Each parameter
-                                                whose value has not been returned by the user
-                                                will take the value from the template.
-
-    Operation on a project
-    ----------------------
-
-        To check if a project is compliant with a template 
-            ppm checkup [-t] [-p] [-d] template-git-path [project-path|shortname]
-                -t, --only-in-template
-                -p, --only-in-project
-                -d, --different
-
-        To start Visual Studio Code de develop a project:
-            ppm project --vscode [project-path|shortname]
-
-        To start Sourcetree:
-            ppm project --sourcetree [project-path|shortname]
+      
 
     Operation on all projects
     -------------------------
