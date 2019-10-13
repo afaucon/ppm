@@ -19,7 +19,7 @@ install_requires = [
 
 entry_points = {
     'console_scripts': [
-        'ppm = ppm.__main__:main_procedure',
+        'ppm = ppm.__main__:main',
     ],
     'gui_scripts': [
     ]
