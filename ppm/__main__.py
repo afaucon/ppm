@@ -1,4 +1,6 @@
 import click
+import ppm
+import pprint
 
 
 class Url(click.ParamType):
@@ -10,7 +12,10 @@ class Url(click.ParamType):
             urllib.request.urlopen(value)
         except urllib.request.URLError:
             self.fail("\nBad URL: " + value, param, ctx)
-
+        except ValueError:
+            self.fail("\nBad URL: " + value, param, ctx)
+        return value
+        
     def __repr__(self):
         return 'URL'
 
@@ -36,7 +41,8 @@ class PathOrUrl(click.ParamType):
                 
         if error_msg_for_path and error_msg_for_url:
             self.fail(value + " is not a valid path nor a valid URL.", param, ctx)
-                
+        return value
+
     def __repr__(self):
         return 'PATH OR URL'
 
@@ -53,12 +59,25 @@ def main():
               help='Provide the version of the template.')
 @click.argument('git-template',
                 type=PathOrUrl())
-def template(parameters, version):
+def template(parameters, version, git_template):
     """
     Gets information about a generic template.
     """
-    pass
+    if parameters:
+        template = ppm.Template(template_git_url=git_template)
+        unknown_parameters_set = template.unknown_parameters_set
+        print("Parameters:")
+        print("===========")
+        print()
+        pprint.PrettyPrinter().pprint(unknown_parameters_set)
+        print()
 
+    if version:
+        print("Version:")
+        print("========")
+        print()
+        print("Not yet implemented")
+        print()
 
 @main.command()
 @click.option('-c', '--configuration-file', 
