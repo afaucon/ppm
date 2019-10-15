@@ -81,7 +81,7 @@ def template(parameters, version, git_template):
 
 @main.command()
 @click.option('-c', '--configuration-file', 
-              type=click.Path(exists=True, dir_okay=False), 
+              type=click.File(), 
               help='Configures template parameters with a configration file. This file must be json formatted.')
 @click.option('-i', '--interractive', 
               is_flag=True,
@@ -97,8 +97,25 @@ def instanciate(configuration_file, interractive, git_template, path):
     Instanciates a git template to create a new project into a local path.
     Without any option, its is similar to git clone.
     """
-    pass
 
+    # Open the configuration file if provided, and recover defined parameters values.
+    for line in configuration_file:
+        print(line.strip())
+
+    # If the interractive option is activated, requires the user to enter all the missing parameters values.
+
+    # If they are still missing parameters values, then raise an error and terminate the programm.
+
+    # Here, a value for all the parameters has been provided.
+
+    # Clone the git_template into a temparary directory.
+
+    # Remove the (git) remote.
+
+    # Replace the generic parameters by the provided parameters values.
+
+    # Commit the result.
+    pass
 
 @main.command()
 @click.option('-t', '--only-in-template', 
