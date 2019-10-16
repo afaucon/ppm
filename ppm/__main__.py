@@ -86,8 +86,11 @@ def template(parameters, version, git_template):
 @click.option('-i', '--interractive', 
               is_flag=True,
               help='Prompts the user to enter a value for each generic parameters, whose values have not been specified with the parameter file. Each parameter whose value has not been returned by the user will take the value from the template.')
-@click.argument('git-template',
-                type=PathOrUrl())
+@click.option('-f', '--force', 
+              is_flag=True,
+              help='Forces the instance creation even if there are undefined parameters.')
+@click.argument('git-template')
+                #type=PathOrUrl())
 @click.argument('path', 
                 type=click.Path(exists=True, file_okay=False, resolve_path=True), 
                 required=False, 
@@ -98,10 +101,16 @@ def instanciate(configuration_file, interractive, git_template, path):
     Without any option, its is similar to git clone.
     """
 
-    # Open the configuration file if provided, and recover defined parameters values.
-    for line in configuration_file:
-        print(line.strip())
+    # Create the template object
+    template = ppm.Template(template_git_url=git_template)
 
+    # Recovers the unknown parameters
+    unknown_parameters_set = template.unknown_parameters_set
+
+    # Open the configuration file if provided, and recover defined parameters values.
+    import json
+    parameters = json.load(configuration_file)
+    
     # If the interractive option is activated, requires the user to enter all the missing parameters values.
 
     # If they are still missing parameters values, then raise an error and terminate the programm.
