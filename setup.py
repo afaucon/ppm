@@ -9,12 +9,17 @@ from setuptools import setup, find_packages
 
 package_name = "ppm"
 
-python_requires = ">=3.7"
+python_requires = ">=3.8"
+# Justification:
+# https://github.com/python/cpython/pull/10320
 
 dependency_links = [
 ]
 
 install_requires = [
+    "click",
+    "gitpython",
+    "jinja2"
 ]
 
 entry_points = {
