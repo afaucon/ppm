@@ -65,7 +65,7 @@ def template(parameters, version, git_template):
     """
     if parameters:
         template = ppm.Template(template_git_url=git_template)
-        unknown_parameters_set = template.unknown_parameters_set
+        unknown_parameters_set = template.unknown_parameters
         print("Parameters:")
         print("===========")
         print()
@@ -89,13 +89,13 @@ def template(parameters, version, git_template):
 @click.option('-f', '--force', 
               is_flag=True,
               help='Forces the instance creation even if there are undefined parameters.')
-@click.argument('git-template')
-                #type=PathOrUrl())
+@click.argument('git-template',
+                type=PathOrUrl())
 @click.argument('path', 
                 type=click.Path(exists=True, file_okay=False, resolve_path=True), 
                 required=False, 
                 default=".")
-def instanciate(configuration_file, interractive, git_template, path):
+def instanciate(configuration_file, interractive, force, git_template, path):
     """
     Instanciates a git template to create a new project into a local path.
     Without any option, its is similar to git clone.
@@ -104,27 +104,38 @@ def instanciate(configuration_file, interractive, git_template, path):
     # Create the template object
     template = ppm.Template(template_git_url=git_template)
 
-    # Recovers the unknown parameters
-    unknown_parameters_set = template.unknown_parameters_set
+    # Recovers the unknown parameters from the template.
+    unknown_parameters = template.unknown_parameters
+    parameters = {parameter:None for parameter in unknown_parameters}
 
-    # Open the configuration file if provided, and recover defined parameters values.
-    import json
-    parameters = json.load(configuration_file)
+    # If the configuration file is provided,
+    # then recover defined parameters values from it.
+    if configuration_file:
+        import json
+        file_parameters = json.load(configuration_file)
+        for elem in file_parameters:
+            if elem in parameters:
+                 parameters[elem] = file_parameters[elem]
+            else:
+                # Todo: Inform the user with a warning
+                pass
     
-    # If the interractive option is activated, requires the user to enter all the missing parameters values.
+    # If the interractive option is activated,
+    # then require the user to enter the missing parameters values.
+    if interractive:
+        for elem in parameters:
+            if parameters[elem] is None:
+                parameters[elem] = click.prompt(elem + ": ")
 
-    # If they are still missing parameters values, then raise an error and terminate the programm.
-
-    # Here, a value for all the parameters has been provided.
-
-    # Clone the git_template into a temparary directory.
-
-    # Remove the (git) remote.
-
-    # Replace the generic parameters by the provided parameters values.
-
-    # Commit the result.
-    pass
+    # If the force option is activated,
+    # then fill missing parameters values with empty string. 
+    if force:
+        for elem in parameters:
+            if parameters[elem] is None:
+                parameters[elem] = ""
+    
+    # Instanciate the template
+    template.instanciate(parameters)
 
 @main.command()
 @click.option('-t', '--only-in-template', 

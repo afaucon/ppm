@@ -19,7 +19,7 @@ class Template():
         ppm.git_tool.fork(from_url=template_git_url, to_path=self.tempdir_object.name)
 
         # Recovering the template parameters
-        self.unknown_parameters_set = set()
+        self.unknown_parameters = set()
 
         # Process all files and directories
         for root, dirs, files in os.walk(self.tempdir_object.name, topdown=False):
@@ -30,7 +30,7 @@ class Template():
                     # Find undeclared variables in the files name
                     ast = env.parse(name)
                     undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters_set.update(undeclared_variables_set)
+                    self.unknown_parameters.update(undeclared_variables_set)
 
                     # Find undeclared variables in the file content
                     f = open(os.path.join(root, name), "r", encoding='utf-8')
@@ -38,14 +38,20 @@ class Template():
                     f.close()
                     ast = env.parse(string)
                     undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters_set.update(undeclared_variables_set)
+                    self.unknown_parameters.update(undeclared_variables_set)
                     
                 for name in dirs:
                     # Find undeclared variables in the folders name
                     ast = env.parse(name)
                     undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters_set.update(undeclared_variables_set)
+                    self.unknown_parameters.update(undeclared_variables_set)
         
 
-    def create_project(self):
+    def instanciate(self, parameters):
+        
+        # If they are missing parameters among provided parameters, then raise an error.
+        
+        # Replace the generic parameters of the template by the provided parameters values.
+
+        # Commit the result.
         pass
