@@ -1,10 +1,10 @@
 import tempfile
 import os
 
+import git
+
 import jinja2
 import jinja2.meta
-
-import ppm.git_tool
 
 
 class TemplateException(Exception):
@@ -26,9 +26,14 @@ class Template():
 
         # Create a temporary directory
         self.tempdir_object = tempfile.TemporaryDirectory()
-        
-        # Fork the template git into the temporary directory
-        ppm.git_tool.fork(from_url=template_git_url, to_path=self.tempdir_object.name)
+
+        # Clone the git into the temporary directory
+        git.Repo.clone_from(url=template_git_url, to_path=self.tempdir_object.name)
+        new_repo = git.Repo(path=self.tempdir_object.name) # Be careful: path must contain an existing .git folder.
+
+        # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
+        # Rename the "origin" remote into 'template'
+        git.remote.Remote(new_repo, 'origin').rename('template')
 
         # Recovering the template parameters
         self.unknown_parameters = set()
