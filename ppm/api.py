@@ -7,6 +7,18 @@ import jinja2.meta
 import ppm.git_tool
 
 
+class TemplateException(Exception):
+    """
+    The generic class for all exceptions raised by Template objects.
+    It is not meant to be directly instantiated.
+    """
+    
+class instanciationException(TemplateException):
+    """
+    This exception is raised by the method `instanciate` in case:
+    - there are not enough parameters provided to specialised completly the generic template.
+    """
+    
 class Template():
 
     def __init__(self, template_git_url):
@@ -26,32 +38,53 @@ class Template():
             if os.path.join(self.tempdir_object.name, '.git') not in root:
                 env = jinja2.Environment()
 
-                for name in files:
-                    # Find undeclared variables in the files name
+                # Finding undeclared variables in folders name
+                for name in dirs:
                     ast = env.parse(name)
                     undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
                     self.unknown_parameters.update(undeclared_variables_set)
 
-                    # Find undeclared variables in the file content
+                # Finding undeclared variables in files name
+                for name in files:
+                    ast = env.parse(name)
+                    undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
+                    self.unknown_parameters.update(undeclared_variables_set)
+
+                # Finding undeclared variables in files content
+                for name in files:
                     f = open(os.path.join(root, name), "r", encoding='utf-8')
                     string = f.read()
                     f.close()
                     ast = env.parse(string)
                     undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
                     self.unknown_parameters.update(undeclared_variables_set)
-                    
-                for name in dirs:
-                    # Find undeclared variables in the folders name
-                    ast = env.parse(name)
-                    undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters.update(undeclared_variables_set)
         
-
     def instanciate(self, parameters):
         
         # If they are missing parameters among provided parameters, then raise an error.
-        
-        # Replace the generic parameters of the template by the provided parameters values.
+        for unknown_parameter in self.unknown_parameters:
+            if unknown_parameter not in parameters:
+                raise instanciationException
 
-        # Commit the result.
+        # Replace the generic parameters of the template by the provided parameters values.
+        for root, dirs, files in os.walk(self.tempdir_object.name, topdown=False):
+            if os.path.join(self.tempdir_object.name, '.git') not in root:
+                env = jinja2.Environment()
+
+                # Replacing undeclared variables in folders name
+                for name in dirs:
+                    pass
+                    # Call git mv if folder has been renamed
+
+                # Replacing undeclared variables in files name
+                for name in files:
+                    pass
+                    # Call git mv if file has been renamed
+
+                # Replacing undeclared variables in files content
+                for name in files:
+                    pass
+                    # Call git mv if file has been modified
+
+        # Commit the result on the branch master.
         pass

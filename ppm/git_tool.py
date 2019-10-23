@@ -17,6 +17,6 @@ def fork(from_url, to_path):
     repo = git.Repo(path=to_path)
 
     # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
-    # Rename the "origin" remote into 'upstream'
+    # Rename the "origin" remote into 'template'
     remote = git.remote.Remote(repo, 'origin')
     remote.rename('template')
