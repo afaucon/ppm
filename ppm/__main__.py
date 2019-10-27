@@ -1,41 +1,31 @@
 import click
 import ppm
+import logging
 import pprint
 
 
+CONFIG_FILE = ".ppm"
+
+
 @click.group()
-def main():
+def ppm_cli():
     pass
 
-@main.command()
+@ppm_cli.command()
 @click.option('-p', '--parameters', 
               is_flag=True,
               help='Provide the list of the parameters of the template.')
-@click.option('-v', '--version', 
-              is_flag=True,
-              help='Provide the version of the template.')
 @click.argument('git-template')
-def template(parameters, version, git_template):
+def template(parameters, git_template):
     """
     Gets information about a generic template.
     """
     if parameters:
         template = ppm.Template(git_template=git_template)
         unknown_parameters_set = template.unknown_parameters
-        print("Parameters:")
-        print("===========")
-        print()
         pprint.PrettyPrinter().pprint(unknown_parameters_set)
-        print()
 
-    if version:
-        print("Version:")
-        print("========")
-        print()
-        print("Not yet implemented")
-        print()
-
-@main.command()
+@ppm_cli.command()
 @click.option('-c', '--configuration-file', 
               type=click.File(), 
               help='Configures template parameters with a configration file. This file must be json formatted.')
@@ -72,7 +62,7 @@ def instanciate(configuration_file, interractive, force, git_template, path):
             if elem in parameters:
                  parameters[elem] = file_parameters[elem]
             else:
-                # Todo: Inform the user with a warning
+                # Todo: Inform the user with a warning with logging.
                 pass
     
     # If the interractive option is activated,
@@ -92,7 +82,7 @@ def instanciate(configuration_file, interractive, force, git_template, path):
     # Instanciate the template
     template.instanciate(parameters)
 
-@main.command()
+@ppm_cli.command()
 @click.option('-t', '--only-in-template', 
               is_flag=True,
               help='Returns files that are in the template an not in the project.')
@@ -113,7 +103,139 @@ def checkup(only_in_template, only_in_project, different, path):
     pass
 
 
-@main.command()
+
+
+
+
+class TemplateOptions(click.Choice):
+    name = "template options"
+
+    mutually_exclusion_options_def = {
+        'add': {
+            'options': ['a', 'add'],
+            'help': '',
+        },
+        'remove': {
+            'options': ['r', 'remove'],
+            'help': '',
+        },
+        'get_parameters': {
+            'options': ['p', 'parameters', 'list_parameters'],
+            'help': 'Provide the list of the parameters of the template.',
+        },
+        'list_templates': {
+            'options': ['l', 'list'],
+            'help': '',
+        },
+        'show_templates': {
+            'options': ['s', 'show'],
+            'help': '',
+        },
+    }
+
+    def __init__(self):
+        choices = []
+        for key in TemplateOptions.mutually_exclusion_options_def:
+            choices = choices + TemplateOptions.mutually_exclusion_options_def[key]['options']
+        click.Choice.__init__(self, choices)
+
+    def convert(self, value, param, ctx):
+        return click.Choice.convert(self, value, param, ctx)
+
+    def __repr__(self):
+        return 'TEMPLATE OPTIONS'
+
+
+@click.group()
+@click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
+def ppm_config_templates_cli(verbose):
+    if verbose == 0:
+        logging.basicConfig(level=logging.WARNING)
+    if verbose == 1:
+        logging.basicConfig(level=logging.INFO)
+    if verbose == 2:
+        logging.basicConfig(level=logging.DEBUG)
+
+@ppm_config_templates_cli.command()
+@click.argument('git-template')
+def add(git_template):
+    """
+    Description to write
+    """
+    import json
+    
+    try:
+        with open(CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        config = {}
+    
+    previous_config = config
+
+    if 'bookmarked_templates' not in config:
+        config['bookmarked_templates'] = [git_template]
+    else:
+        if git_template not in config['bookmarked_templates']:
+            config['bookmarked_templates'].append(git_template)
+
+    if previous_config != config:
+        with open(CONFIG_FILE, 'w') as f:
+            json.dump(config, f)
+
+@ppm_config_templates_cli.command()
+@click.argument('git-template')
+def remove(git_template):
+    """
+    Description to write
+    """
+    import json
+    
+    config = {}
+    try:
+        with open(CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        logging.debug("No config file found.")
+    except:
+        logging.error("An unexpected error occured when trying to read from the config file.")
+        raise
+    else:
+        if 'bookmarked_templates' not in config:
+            logging.debug("No bookmarked template found.")
+        else:
+            if git_template not in config['bookmarked_templates']:
+                logging.debug("{} not in bookmarked templates.".format(git_template))
+            else:
+                config['bookmarked_templates'].remove(git_template)
+
+                try:
+                    with open(CONFIG_FILE, 'w') as f:
+                        json.dump(config, f)
+                        logging.debug("{} removed from bookmarked templates.".format(git_template))
+                except:
+                    logging.error("An unexpected error occured when trying to write in the config file.")
+                    raise
+    logging.info("Command ends with success.")
+
+@ppm_config_templates_cli.command()
+def list():
+    """
+    Description to write
+    """
+    pass
+
+@ppm_config_templates_cli.command()
+def show():
+    """
+    Description to write
+    """
+    pass
+
+
+
+
+
+@click.command()
 @click.option('--vscode', 
               is_flag=True,
               help='Launches visual studio code.')
@@ -124,11 +246,15 @@ def checkup(only_in_template, only_in_project, different, path):
                 type=click.Path(exists=True, file_okay=False, resolve_path=True), 
                 required=False, 
                 default=".")
-def ide(vscode, sourcetree, path):
+def ppm_ide_cli(vscode, sourcetree, path):
     """
     Launches an ide on a project.
     """
     pass
     
+
+
+    
 if __name__ == '__main__':
-    main()
+    import sys
+    eval(sys.argv[1])(sys.argv[2:])

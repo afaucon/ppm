@@ -24,7 +24,9 @@ install_requires = [
 
 entry_points = {
     'console_scripts': [
-        'ppm = ppm.__main__:main',
+        'ppm = ppm.__main__:ppm_cli',
+        'ppm-config-templates = ppm.__main__:ppm_config_templates_cli',
+        'ppm-ide = ppm.__main__:ppm_ide_cli',
     ],
     'gui_scripts': [
     ]
