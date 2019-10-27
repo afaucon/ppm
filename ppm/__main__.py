@@ -3,49 +3,6 @@ import ppm
 import pprint
 
 
-class Url(click.ParamType):
-    name = "url"
-
-    def convert(self, value, param, ctx):
-        import urllib.request
-        try:
-            urllib.request.urlopen(value)
-        except urllib.request.URLError:
-            self.fail("\nBad URL: " + value, param, ctx)
-        except ValueError:
-            self.fail("\nBad URL: " + value, param, ctx)
-        return value
-        
-    def __repr__(self):
-        return 'URL'
-
-class PathOrUrl(click.ParamType):
-    name = "path or url"
-
-    def __init__(self):
-        self.path_param = click.Path(exists=True, file_okay=False)
-        self.url_param = Url()
-
-    def convert(self, value, param, ctx):
-        error_msg_for_path = False
-        error_msg_for_url = False
-        try:
-            self.path_param.convert(value, param, ctx)
-        except click.BadParameter:
-            error_msg_for_path = True
-
-        try:
-            self.url_param.convert(value, param, ctx)
-        except click.BadParameter:
-            error_msg_for_url = True
-                
-        if error_msg_for_path and error_msg_for_url:
-            self.fail(value + " is not a valid path nor a valid URL.", param, ctx)
-        return value
-
-    def __repr__(self):
-        return 'PATH OR URL'
-
 @click.group()
 def main():
     pass
@@ -57,14 +14,13 @@ def main():
 @click.option('-v', '--version', 
               is_flag=True,
               help='Provide the version of the template.')
-@click.argument('git-template',
-                type=PathOrUrl())
+@click.argument('git-template')
 def template(parameters, version, git_template):
     """
     Gets information about a generic template.
     """
     if parameters:
-        template = ppm.Template(template_git_url=git_template)
+        template = ppm.Template(git_template=git_template)
         unknown_parameters_set = template.unknown_parameters
         print("Parameters:")
         print("===========")
@@ -89,8 +45,7 @@ def template(parameters, version, git_template):
 @click.option('-f', '--force', 
               is_flag=True,
               help='Forces the instance creation even if there are undefined parameters.')
-@click.argument('git-template',
-                type=PathOrUrl())
+@click.argument('git-template')
 @click.argument('path', 
                 type=click.Path(exists=True, file_okay=False, resolve_path=True), 
                 required=False, 
@@ -102,7 +57,7 @@ def instanciate(configuration_file, interractive, force, git_template, path):
     """
 
     # Create the template object
-    template = ppm.Template(template_git_url=git_template)
+    template = ppm.Template(git_template=git_template)
 
     # Recovers the unknown parameters from the template.
     unknown_parameters = template.unknown_parameters

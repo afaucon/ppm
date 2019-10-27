@@ -21,14 +21,13 @@ class instanciationException(TemplateException):
     
 class Template():
 
-    def __init__(self, template_git_url):
-        self.template_git_url = template_git_url
+    def __init__(self, git_template):
 
         # Create a temporary directory
         self.tempdir_object = tempfile.TemporaryDirectory()
 
         # Clone the git into the temporary directory
-        git.Repo.clone_from(url=template_git_url, to_path=self.tempdir_object.name)
+        git.Repo.clone_from(url=git_template, to_path=self.tempdir_object.name)
         new_repo = git.Repo(path=self.tempdir_object.name) # Be careful: path must contain an existing .git folder.
 
         # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
@@ -78,18 +77,18 @@ class Template():
 
                 # Replacing undeclared variables in folders name
                 for name in dirs:
-                    pass
                     # Call git mv if folder has been renamed
+                    pass
 
                 # Replacing undeclared variables in files name
                 for name in files:
-                    pass
                     # Call git mv if file has been renamed
+                    pass
 
                 # Replacing undeclared variables in files content
                 for name in files:
+                    # Call git add if file has been modified
                     pass
-                    # Call git mv if file has been modified
 
         # Commit the result on the branch master.
         pass
