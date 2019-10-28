@@ -4,30 +4,6 @@ import logging
 
 CONFIG_FILE = ".ppm"
 
-
-class BookmarkedTemplates:
-    """
-    Description to write
-    """
-
-    def __init__(self):
-        """
-        Main constructor
-        """
-        self.config_found = False
-        self.config = None
-        
-        try:
-            with open(CONFIG_FILE, 'r') as f:
-                config = json.load(f)
-                new_config_file = False
-        except FileNotFoundError:
-            config = {}
-            new_config_file = True
-        except:
-            logging.error("An unexpected error occured when trying to read from the config file.")
-            raise
-
 def add_template(git_template):
     """
     Adds a git template into the bookmarked templates.
