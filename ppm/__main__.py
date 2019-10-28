@@ -1,7 +1,9 @@
 import click
-import ppm
 import logging
 import pprint
+
+import ppm
+import ppm.config_templates
 
 
 CONFIG_FILE = ".ppm"
@@ -161,42 +163,9 @@ def ppm_config_templates_cli(verbose):
 @click.argument('git-template')
 def add(git_template):
     """
-    Adds a git template to the bookmarked templates.
+    Adds a git template into the bookmarked templates.
     """
-    import json
-    
-    try:
-        with open(CONFIG_FILE, 'r') as f:
-            config = json.load(f)
-            new_config_file = False
-    except FileNotFoundError:
-        config = {}
-        new_config_file = True
-    except:
-        logging.error("An unexpected error occured when trying to read from the config file.")
-        raise
-
-
-    if 'bookmarked_templates' in config and git_template in config['bookmarked_templates']:
-        logging.warning("Config file not updated because item is already stored.")
-    else:
-
-        if 'bookmarked_templates' not in config:
-            config['bookmarked_templates'] = [git_template]
-        else:
-            config['bookmarked_templates'].append(git_template)
-
-        try:
-            with open(CONFIG_FILE, 'w') as f:
-                json.dump(config, f)
-        except:
-            logging.error("An unexpected error occured when trying to write in the config file.")
-            raise
-        else:
-            if new_config_file:
-                logging.info("Config file created.")
-            else:
-                logging.info("Config file updated.")
+    ppm.config_templates.add_template(git_template)
 
 @ppm_config_templates_cli.command()
 @click.argument('git-template')
@@ -204,53 +173,15 @@ def remove(git_template):
     """
     Removes a git template from the bookmarked templates.
     """
-    import json
-    
-    config = {}
-    try:
-        with open(CONFIG_FILE, 'r') as f:
-            config = json.load(f)
-    except FileNotFoundError:
-        logging.warning("No existing config file.")
-    except:
-        logging.error("An unexpected error occured when trying to read from the config file.")
-        raise
-    else:
-        if 'bookmarked_templates' not in config or git_template not in config['bookmarked_templates']:
-            logging.warning("Config file not updated because item not found.")
-        else:
-
-            config['bookmarked_templates'].remove(git_template)
-
-            try:
-                with open(CONFIG_FILE, 'w') as f:
-                    json.dump(config, f)
-            except:
-                logging.error("An unexpected error occured when trying to write in the config file.")
-                raise
-            else:
-                logging.info("Config file updated.")
+    ppm.config_templates.remove_template(git_template)
 
 @ppm_config_templates_cli.command()
 def list():
     """
     Lists the bookmarked templates.
     """
-    import json
-    
-    config = {}
-    try:
-        with open(CONFIG_FILE, 'r') as f:
-            config = json.load(f)
-    except FileNotFoundError:
-        logging.info("No existing config file.")
-    except:
-        logging.error("An unexpected error occured when trying to read from the config file.")
-        raise
-    else:
-        if 'bookmarked_templates' in config:
-            for template in config['bookmarked_templates']:
-                click.echo('- ' + template)
+    for template in ppm.config_templates.get_templates():
+        click.echo('- ' + template)
 
 
 
