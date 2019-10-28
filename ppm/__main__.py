@@ -161,7 +161,7 @@ def ppm_config_templates_cli(verbose):
 @click.argument('git-template')
 def add(git_template):
     """
-    Description to write
+    Adds a git template to the bookmarked templates.
     """
     import json
     
@@ -202,7 +202,7 @@ def add(git_template):
 @click.argument('git-template')
 def remove(git_template):
     """
-    Description to write
+    Removes a git template from the bookmarked templates.
     """
     import json
     
@@ -234,17 +234,23 @@ def remove(git_template):
 @ppm_config_templates_cli.command()
 def list():
     """
-    Description to write
+    Lists the bookmarked templates.
     """
-    pass
-
-@ppm_config_templates_cli.command()
-def show():
-    """
-    Description to write
-    """
-    pass
-
+    import json
+    
+    config = {}
+    try:
+        with open(CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        logging.info("No existing config file.")
+    except:
+        logging.error("An unexpected error occured when trying to read from the config file.")
+        raise
+    else:
+        if 'bookmarked_templates' in config:
+            for template in config['bookmarked_templates']:
+                click.echo('- ' + template)
 
 
 
