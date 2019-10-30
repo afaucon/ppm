@@ -1,5 +1,6 @@
 import click
 import logging
+import os.path
 import pprint
 
 import ppm
@@ -39,15 +40,18 @@ def template(parameters, git_template):
               is_flag=True,
               help='Forces the instance creation even if there are undefined parameters.')
 @click.argument('git-template')
-@click.argument('path', 
-                type=click.Path(exists=True, file_okay=False, resolve_path=True), 
+@click.argument('destination', 
+                type=click.Path(), 
                 required=False, 
                 default=".")
-def instanciate(configuration_file, interractive, force, git_template, path):
+def instanciate(configuration_file, interractive, force, git_template, destination):
     """
     Instanciates a git template to create a new project into a local path.
     Without any option, its is similar to git clone.
     """
+
+    if os.path.exists(destination):
+        raise click.BadParameter("Destination already exists")
 
     # Create the template object
     template = ppm.Template(git_template=git_template)
@@ -73,7 +77,7 @@ def instanciate(configuration_file, interractive, force, git_template, path):
     if interractive:
         for elem in parameters:
             if parameters[elem] is None:
-                parameters[elem] = click.prompt(elem + ": ")
+                parameters[elem] = click.prompt(elem)
 
     # If the force option is activated,
     # then fill missing parameters values with empty string. 
@@ -83,7 +87,7 @@ def instanciate(configuration_file, interractive, force, git_template, path):
                 parameters[elem] = ""
     
     # Instanciate the template
-    template.instanciate(parameters)
+    template.instanciate(parameters, destination)
 
 @ppm_cli.command()
 @click.option('-t', '--only-in-template', 
@@ -99,7 +103,8 @@ def instanciate(configuration_file, interractive, force, git_template, path):
                 type=click.Path(exists=True, file_okay=False, resolve_path=True), 
                 required=False, 
                 default=".")
-def checkup(only_in_template, only_in_project, different, path):
+@click.argument('git-template')
+def checkup(only_in_template, only_in_project, different, path, git_template):
     """
     Checks if a project is compliant with a template.
     """
