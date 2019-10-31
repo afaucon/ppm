@@ -66,8 +66,7 @@ def instanciate(configuration_file, interractive, force, git_template, destinati
             if elem in parameters:
                  parameters[elem] = file_parameters[elem]
             else:
-                # Todo: Inform the user with a warning with logging.
-                pass
+                logging.info("Parameter provided in configuration is useless: {}".format(elem))
     
     # If the interractive option is activated,
     # then require the user to enter the missing parameters values.
