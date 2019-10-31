@@ -41,7 +41,7 @@ def template(parameters, git_template):
               help='Forces the instance creation even if there are undefined parameters.')
 @click.argument('git-template')
 @click.argument('destination', 
-                type=click.Path(), 
+                type=click.Path(exists=True, file_okay=False, dir_okay=True, writable=True), 
                 required=False, 
                 default=".")
 def instanciate(configuration_file, interractive, force, git_template, destination):
@@ -49,9 +49,6 @@ def instanciate(configuration_file, interractive, force, git_template, destinati
     Instanciates a git template to create a new project into a local path.
     Without any option, its is similar to git clone.
     """
-
-    if os.path.exists(destination):
-        raise click.BadParameter("Destination already exists")
 
     # Create the template object
     template = ppm.Template(git_template=git_template)
