@@ -78,30 +78,35 @@ class Template():
         # Replace the generic parameters of the template by the provided parameters values.
         for root, dirs, files in os.walk(self.tempdirpath, topdown=False):
             if os.path.join(self.tempdirpath, '.git') not in root:
-                env = jinja2.Environment()
 
-                # Replacing undeclared variables in folders name
-                for dirname in dirs:
-                    # Call git mv if folder has been renamed
-                    new_dirname = jinja2.Template(dirname).render(parameters)
-                    print(new_dirname)
-                    if new_dirname != dirname:
-                        self.repo.index.move([dirname, new_dirname])
-                        pass
+                # Replacing undeclared variables in files content
+                env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=root))
+                for filename in files:
+                    file_content = env.get_template(filename).render(parameters)
+                    with open(os.path.join(root, filename), "w", newline='') as fh:
+                        fh.write(file_content)
+                    self.repo.index.add(os.path.join(root, filename))
 
                 # Replacing undeclared variables in files name
                 for filename in files:
-                    # Call git mv if file has been renamed
-                    pass
+                    new_filename = jinja2.Template(filename).render(parameters)
+                    if new_filename != filename:
+                        # self.repo.index.move([filename, new_filename]) # Todo: Old: To remove probably
+                        self.repo.index.move([os.path.join(root, filename), os.path.join(root, new_filename)])
 
-                # Replacing undeclared variables in files content
-                for filename in files:
-                    # Call git add if file has been modified
-                    pass
+                # Replacing undeclared variables in folders name
+                for dirname in dirs:
+                    new_dirname = jinja2.Template(dirname).render(parameters)
+                    if new_dirname != dirname:
+                        # self.repo.index.move([dirname, new_dirname]) # Todo: Old: To remove probably
+                        self.repo.index.move([os.path.join(root, dirname), os.path.join(root, new_dirname)])
+
 
         # Commit the result on the branch master.
         self.repo.index.commit("Template instanciation")
-        del self.repo
         
         # Finally, copy the temporary template to the final destination
         shutil.copytree(self.tempdirpath, destination)
+
+        # End of the instanciation
+        del self.repo # Important, before the tempdir is automatically deleted 
