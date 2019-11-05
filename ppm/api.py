@@ -34,7 +34,7 @@ class Template():
         self.repo = git.Repo(path=self.tempdirpath) # Be careful: 'path' must contain an existing .git folder.
 
         # Todo: Prettier alternative. Check if it works!
-        # repo = git.Repo.clone_from(url=git_template, to_path=self.tempdirpath)
+        # self.repo = git.Repo.clone_from(url=git_template, to_path=self.tempdirpath)
         
         # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
         # Rename the "origin" remote into 'template'
@@ -91,16 +91,13 @@ class Template():
                 for filename in files:
                     new_filename = jinja2.Template(filename).render(parameters)
                     if new_filename != filename:
-                        # self.repo.index.move([filename, new_filename]) # Todo: Old: To remove probably
                         self.repo.index.move([os.path.join(root, filename), os.path.join(root, new_filename)])
 
                 # Replacing undeclared variables in folders name
                 for dirname in dirs:
                     new_dirname = jinja2.Template(dirname).render(parameters)
                     if new_dirname != dirname:
-                        # self.repo.index.move([dirname, new_dirname]) # Todo: Old: To remove probably
                         self.repo.index.move([os.path.join(root, dirname), os.path.join(root, new_dirname)])
-
 
         # Commit the result on the branch master.
         self.repo.index.commit("Template instanciation")
