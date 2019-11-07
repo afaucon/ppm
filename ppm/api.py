@@ -27,14 +27,14 @@ class Template():
 
         # Create a temporary directory
         self.tempdir = tempfile.TemporaryDirectory()
-        self.tempdirpath = self.tempdir.name
+        self.dirpath = self.tempdir.name
 
         # Clone the git into the temporary directory
-        git.Repo.clone_from(url=git_template, to_path=self.tempdirpath)
-        self.repo = git.Repo(path=self.tempdirpath) # Be careful: 'path' must contain an existing .git folder.
+        git.Repo.clone_from(url=git_template, to_path=self.dirpath)
+        self.repo = git.Repo(path=self.dirpath) # Be careful: 'path' must contain an existing .git folder.
 
         # Todo: Prettier alternative. Check if it works!
-        # self.repo = git.Repo.clone_from(url=git_template, to_path=self.tempdirpath)
+        # self.repo = git.Repo.clone_from(url=git_template, to_path=self.dirpath)
         
         # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
         # Rename the "origin" remote into 'template'
@@ -43,8 +43,8 @@ class Template():
         # Recovering the template parameters
         self.unknown_parameters = set()
         # Process all files and directories
-        for root, dirs, files in os.walk(self.tempdirpath, topdown=False):
-            if os.path.join(self.tempdirpath, '.git') not in root:
+        for root, dirs, files in os.walk(self.dirpath, topdown=False):
+            if os.path.join(self.dirpath, '.git') not in root:
                 env = jinja2.Environment()
 
                 # Finding undeclared variables in folders name
@@ -76,8 +76,8 @@ class Template():
                 raise instanciationException
 
         # Replace the generic parameters of the template by the provided parameters values.
-        for root, dirs, files in os.walk(self.tempdirpath, topdown=False):
-            if os.path.join(self.tempdirpath, '.git') not in root:
+        for root, dirs, files in os.walk(self.dirpath, topdown=False): # Todo: Why using topdown=False?
+            if os.path.join(self.dirpath, '.git') not in root:
 
                 # Replacing undeclared variables in files content
                 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=root))
@@ -103,7 +103,7 @@ class Template():
         self.repo.index.commit("Template instanciation")
         
         # Finally, copy the temporary template to the final destination
-        shutil.copytree(self.tempdirpath, destination)
+        shutil.copytree(self.dirpath, destination)
 
         # End of the instanciation
         del self.repo # Important, before the tempdir is automatically deleted 

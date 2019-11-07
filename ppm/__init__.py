@@ -26,10 +26,5 @@ from .__info__ import __license__
 from .__info__ import __copyright__
 
 
-# From old API
 from .api import Template
-
-# From old API
-# from .api import Package, App
-# from .api import Checker, PACKAGE, APP
-# from .api import get_git_status_as_string
+from .checker import directories_are_compilant as is_compliant

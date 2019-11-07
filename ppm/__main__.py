@@ -27,7 +27,7 @@ def template(parameters, git_template):
         template = ppm.Template(git_template=git_template)
         unknown_parameters_set = template.unknown_parameters
         string = pprint.PrettyPrinter().pformat(unknown_parameters_set)
-        print(string) # Do not use print
+        print(string) # Todo: Do not use print within a Click application.
 
 @ppm_cli.command()
 @click.option('-c', '--configuration-file', 
@@ -76,78 +76,35 @@ def instanciate(configuration_file, interractive, force, git_template, destinati
                 parameters[elem] = click.prompt(elem)
 
     # If the force option is activated,
-    # then fill missing parameters values with empty string. 
+    # then fill missing parameters values with an "undefined" string. 
     if force:
         for elem in parameters:
             if parameters[elem] is None:
-                parameters[elem] = ""
+                parameters[elem] = "undefined_" + elem
     
     # Instanciate the template
     template.instanciate(parameters, destination)
 
 @ppm_cli.command()
-@click.option('-t', '--only-in-template', 
-              is_flag=True,
-              help='Returns files that are in the template an not in the project.')
-@click.option('-p', '--only-in-project', 
-              is_flag=True,
-              help='Returns files that are in the project an not in the template.')
-@click.option('-d', '--different', 
-              is_flag=True,
-              help='Returns files that are different between the project and the template.')
-@click.argument('path', 
+@click.argument('git-template')
+@click.argument('directory',
                 type=click.Path(exists=True, file_okay=False, resolve_path=True), 
                 required=False, 
                 default=".")
-@click.argument('git-template')
-def checkup(only_in_template, only_in_project, different, path, git_template):
+def checkup(directory, git_template):
     """
-    Checks if a project is compliant with a template.
+    Checks if a directory is compliant with a template.
     """
-    pass
 
+    # Create the template object
+    template = ppm.Template(git_template=git_template)
 
+    # Analyze if the provided directory is compliant with the template
+    _, uncompliances = ppm.is_compliant(instance=directory, template=template.dirpath)
 
+    for uncompliance in uncompliances:
+        print(uncompliance['relpath'] + ': ' + uncompliance['reason'])
 
-
-
-class TemplateOptions(click.Choice):
-    name = "template options"
-
-    mutually_exclusion_options_def = {
-        'add': {
-            'options': ['a', 'add'],
-            'help': '',
-        },
-        'remove': {
-            'options': ['r', 'remove'],
-            'help': '',
-        },
-        'get_parameters': {
-            'options': ['p', 'parameters', 'list_parameters'],
-            'help': 'Provide the list of the parameters of the template.',
-        },
-        'list_templates': {
-            'options': ['l', 'list'],
-            'help': '',
-        },
-        'show_templates': {
-            'options': ['s', 'show'],
-            'help': '',
-        },
-    }
-
-    def __init__(self):
-        choices = []
-        for key in TemplateOptions.mutually_exclusion_options_def:
-            choices = choices + TemplateOptions.mutually_exclusion_options_def[key]['options']
-        click.Choice.__init__(self, choices)
-
-    def convert(self, value, param, ctx):
-        return click.Choice.convert(self, value, param, ctx)
-
-    def __repr__(self):
-        return 'TEMPLATE OPTIONS'
 
 
 @click.group()
