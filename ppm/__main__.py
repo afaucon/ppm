@@ -74,15 +74,22 @@ def ppm_cli(verbose):
         logging.basicConfig(level=logging.DEBUG)
 
 @ppm_cli.command()
-@click.option('-p', '--parameters', 
+@click.option('-c', '--configuration-file', 
               is_flag=True,
-              help='Provide the list of the parameters of the template.')
+              help='Produce the structure of a configuration file that can be used, after completion, for instanciation or checkup')
+@click.option('-d', '--display', 
+              is_flag=True,
+              help='Display the list of the parameters of the template.')
 @click.argument('git-template')
-def template(parameters, git_template):
+def template_parameters(configuration_file, display, git_template):
     """
     Gets information about a generic template.
     """
-    if parameters:
+    if configuration_file:
+        # TODO: Complete this section
+        pass
+    
+    if display:
         template = ppm.Template(git_template=git_template)
         string = pprint.PrettyPrinter().pformat(template.parameters)
         print(string) # TODO: Do not use print within a Click application.
