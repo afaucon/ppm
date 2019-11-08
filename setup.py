@@ -23,10 +23,10 @@ install_requires = [
 ]
 
 # TODO: Modify the commands like this:
-# dtemplate parameters -c -d
-# dtemplate instanciate
-# dproject checkup
-# dproject ide
+# ppm-template parameters -c -d
+# ppm-template instanciate
+# ppm-project checkup
+# ppm-project ide
 
 # TODO: Clean C:\Users\adrie\AppData\Local\Temp
 
