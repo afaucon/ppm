@@ -32,16 +32,14 @@ class Template():
         # Clone the git into the temporary directory
         git.Repo.clone_from(url=git_template, to_path=self.dirpath)
         self.repo = git.Repo(path=self.dirpath) # Be careful: 'path' must contain an existing .git folder.
-
-        # Todo: Prettier alternative. Check if it works!
-        # self.repo = git.Repo.clone_from(url=git_template, to_path=self.dirpath)
         
         # Because there has been a 'clone' operation, there exists a 'origin' remote ref.
         # Rename the "origin" remote into 'template'
         git.remote.Remote(self.repo, 'origin').rename('template')
 
         # Recovering the template parameters
-        self.unknown_parameters = set()
+        self.fsnode_parameters = set()
+        self.parameters = set()
 
         # Process all files and directories
         for root, dirs, files in os.walk(self.dirpath, topdown=False):
@@ -51,14 +49,16 @@ class Template():
                 # Finding undeclared variables in folders name
                 for name in dirs:
                     ast = env.parse(name)
-                    undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters.update(undeclared_variables_set)
+                    undeclared_variables = jinja2.meta.find_undeclared_variables(ast)
+                    self.fsnode_parameters.update(undeclared_variables)
+                    self.parameters.update(undeclared_variables)
 
                 # Finding undeclared variables in files name
                 for name in files:
                     ast = env.parse(name)
-                    undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters.update(undeclared_variables_set)
+                    undeclared_variables = jinja2.meta.find_undeclared_variables(ast)
+                    self.fsnode_parameters.update(undeclared_variables)
+                    self.parameters.update(undeclared_variables)
 
                 # Finding undeclared variables in files content
                 for name in files:
@@ -66,8 +66,8 @@ class Template():
                     string = f.read()
                     f.close()
                     ast = env.parse(string)
-                    undeclared_variables_set = jinja2.meta.find_undeclared_variables(ast)
-                    self.unknown_parameters.update(undeclared_variables_set)
+                    undeclared_variables = jinja2.meta.find_undeclared_variables(ast)
+                    self.parameters.update(undeclared_variables)
         
     def instanciate(self, parameters, destination):
 

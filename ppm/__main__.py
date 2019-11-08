@@ -33,8 +33,7 @@ def template(parameters, git_template):
     """
     if parameters:
         template = ppm.Template(git_template=git_template)
-        unknown_parameters_set = template.unknown_parameters
-        string = pprint.PrettyPrinter().pformat(unknown_parameters_set)
+        string = pprint.PrettyPrinter().pformat(template.parameters)
         print(string) # Todo: Do not use print within a Click application.
 
 @ppm_cli.command()
@@ -67,7 +66,7 @@ def instanciate(configuration_file, interractive, git_template, destination):
         import json
         file_parameters = json.load(configuration_file)
         for param_name in file_parameters:
-            if param_name in template.unknown_parameters:
+            if param_name in template.parameters:
                  user_parameters[param_name] = file_parameters[param_name]
             else:
                 logging.info("Parameter provided in configuration is useless: {}".format(param_name))
@@ -75,12 +74,12 @@ def instanciate(configuration_file, interractive, git_template, destination):
     # If the interractive option is activated,
     # then require the user to enter the missing parameters values.
     if interractive:
-        for param_name in template.unknown_parameters:
+        for param_name in template.parameters:
             if user_parameters.get(param_name) is None:
                 user_parameters[param_name] = click.prompt(param_name)
     
     # If they are missing parameters among provided parameters, then log an information for the user.
-    for param_name in template.unknown_parameters:
+    for param_name in template.parameters:
         if user_parameters.get(param_name) is None:
             logging.warning("Template instanciation with undefined parameter: {}".format(param_name))
 
@@ -107,6 +106,7 @@ def checkup(directory, git_template):
     for uncompliance in uncompliances:
         print(uncompliance['relpath'] + ': ' + uncompliance['reason'])
 
+    # Todo: Find a common ancestor with git.
 
 
 @click.group()
