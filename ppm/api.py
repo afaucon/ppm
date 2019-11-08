@@ -69,10 +69,10 @@ class Template():
                     undeclared_variables = jinja2.meta.find_undeclared_variables(ast)
                     self.parameters.update(undeclared_variables)
         
-    def instanciate(self, parameters, destination):
+    def instanciate(self, parameters, destination=None):
 
         # Replace the generic parameters of the template by the provided parameters values.
-        for root, dirs, files in os.walk(self.dirpath, topdown=False): # Todo: Why using topdown=False?
+        for root, dirs, files in os.walk(self.dirpath, topdown=False): # TODO: Why using topdown=False?
             if os.path.join(self.dirpath, '.git') not in root:
 
                 # Replacing undeclared variables in files content
@@ -100,8 +100,11 @@ class Template():
         # Commit the result on the branch master.
         self.repo.index.commit("Template instanciation")
         
-        # Finally, copy the temporary template to the final destination
-        shutil.copytree(self.dirpath, destination)
+        # Copy the temporary template to the destination
+        if destination is not None:
+            shutil.copytree(self.dirpath, destination)
 
         # End of the instanciation
-        del self.repo # Important, before the tempdir is automatically deleted 
+        del self.repo # Important, before the tempdir is automatically deleted.
+        # TODO: repo should not be an attribute, be re-created at the beginning of each method from self.dirpath
+  
