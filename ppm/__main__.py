@@ -11,8 +11,16 @@ CONFIG_FILE = ".ppm"
 
 
 @click.group()
-def ppm_cli():
-    pass
+@click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
+def ppm_cli(verbose):
+    if verbose == 0:
+        logging.basicConfig(level=logging.WARNING)
+    if verbose == 1:
+        logging.basicConfig(level=logging.INFO)
+    if verbose == 2:
+        # Todo: In this mode, DEBUG log from imported packages are displayed.
+        # Example: DEBUG:git.cmd:Popen(['git', 'clone', ...
+        logging.basicConfig(level=logging.DEBUG)
 
 @ppm_cli.command()
 @click.option('-p', '--parameters', 
@@ -36,15 +44,12 @@ def template(parameters, git_template):
 @click.option('-i', '--interractive', 
               is_flag=True,
               help='Prompts the user to enter a value for each generic parameters, whose values have not been specified with the parameter file. Each parameter whose value has not been returned by the user will take the value from the template.')
-@click.option('-f', '--force', 
-              is_flag=True,
-              help='Forces the instance creation even if there are undefined parameters.')
 @click.argument('git-template')
 @click.argument('destination', 
                 type=click.Path(exists=True, file_okay=False, dir_okay=True, writable=True), 
                 required=False, 
                 default=".")
-def instanciate(configuration_file, interractive, force, git_template, destination):
+def instanciate(configuration_file, interractive, git_template, destination):
     """
     Instanciates a git template to create a new project into a local path.
     Without any option, its is similar to git clone.
@@ -53,37 +58,34 @@ def instanciate(configuration_file, interractive, force, git_template, destinati
     # Create the template object
     template = ppm.Template(git_template=git_template)
 
-    # Recovers the unknown parameters from the template.
-    unknown_parameters = template.unknown_parameters
-    parameters = {parameter:None for parameter in unknown_parameters}
-
+    # Recovers the unknown parameters from the template. 
+    user_parameters = {}
+    
     # If the configuration file is provided,
     # then recover defined parameters values from it.
     if configuration_file:
         import json
         file_parameters = json.load(configuration_file)
-        for elem in file_parameters:
-            if elem in parameters:
-                 parameters[elem] = file_parameters[elem]
+        for param_name in file_parameters:
+            if param_name in template.unknown_parameters:
+                 user_parameters[param_name] = file_parameters[param_name]
             else:
-                logging.info("Parameter provided in configuration is useless: {}".format(elem))
+                logging.info("Parameter provided in configuration is useless: {}".format(param_name))
     
     # If the interractive option is activated,
     # then require the user to enter the missing parameters values.
     if interractive:
-        for elem in parameters:
-            if parameters[elem] is None:
-                parameters[elem] = click.prompt(elem)
-
-    # If the force option is activated,
-    # then fill missing parameters values with an "undefined" string. 
-    if force:
-        for elem in parameters:
-            if parameters[elem] is None:
-                parameters[elem] = "undefined_" + elem
+        for param_name in template.unknown_parameters:
+            if user_parameters.get(param_name) is None:
+                user_parameters[param_name] = click.prompt(param_name)
     
+    # If they are missing parameters among provided parameters, then log an information for the user.
+    for param_name in template.unknown_parameters:
+        if user_parameters.get(param_name) is None:
+            logging.warning("Template instanciation with undefined parameter: {}".format(param_name))
+
     # Instanciate the template
-    template.instanciate(parameters, destination)
+    template.instanciate(user_parameters, destination)
 
 @ppm_cli.command()
 @click.argument('git-template')

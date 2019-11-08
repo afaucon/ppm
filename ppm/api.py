@@ -42,6 +42,7 @@ class Template():
 
         # Recovering the template parameters
         self.unknown_parameters = set()
+
         # Process all files and directories
         for root, dirs, files in os.walk(self.dirpath, topdown=False):
             if os.path.join(self.dirpath, '.git') not in root:
@@ -70,17 +71,12 @@ class Template():
         
     def instanciate(self, parameters, destination):
 
-        # If they are missing parameters among provided parameters, then raise an error.
-        for unknown_parameter in self.unknown_parameters:
-            if unknown_parameter not in parameters:
-                raise instanciationException
-
         # Replace the generic parameters of the template by the provided parameters values.
         for root, dirs, files in os.walk(self.dirpath, topdown=False): # Todo: Why using topdown=False?
             if os.path.join(self.dirpath, '.git') not in root:
 
                 # Replacing undeclared variables in files content
-                env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=root))
+                env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=root), undefined=jinja2.DebugUndefined)
                 for filename in files:
                     file_content = env.get_template(filename).render(parameters)
                     with open(os.path.join(root, filename), "w", newline='') as fh:
@@ -88,14 +84,16 @@ class Template():
                     self.repo.index.add(os.path.join(root, filename))
 
                 # Replacing undeclared variables in files name
+                env = jinja2.Environment(undefined=jinja2.DebugUndefined)
                 for filename in files:
-                    new_filename = jinja2.Template(filename).render(parameters)
+                    new_filename = env.from_string(filename).render(parameters)
                     if new_filename != filename:
                         self.repo.index.move([os.path.join(root, filename), os.path.join(root, new_filename)])
 
                 # Replacing undeclared variables in folders name
+                env = jinja2.Environment(undefined=jinja2.DebugUndefined)
                 for dirname in dirs:
-                    new_dirname = jinja2.Template(dirname).render(parameters)
+                    new_dirname = env.from_string(dirname).render(parameters)
                     if new_dirname != dirname:
                         self.repo.index.move([os.path.join(root, dirname), os.path.join(root, new_dirname)])
 
