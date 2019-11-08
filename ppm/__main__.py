@@ -37,7 +37,7 @@ def get_user_defined_parameters(configuration_file, interractive, template_param
         import json
         new_parameters_definition = json.load(configuration_file)
         for param_name in new_parameters_definition:
-            if param_name in template.parameters:
+            if param_name in template_parameters:
                  user_parameters[param_name] = new_parameters_definition[param_name]
             else:
                 logging.info("Parameter provided in configuration is useless: {}".format(param_name))
@@ -55,7 +55,7 @@ def get_user_defined_parameters(configuration_file, interractive, template_param
     # If the interractive option is activated,
     # then require the user to enter the missing parameters values.
     if interractive:
-        for param_name in template.parameters:
+        for param_name in template_parameters:
             if user_parameters.get(param_name) is None:
                 user_parameters[param_name] = click.prompt(param_name)
     
@@ -88,7 +88,7 @@ def template_parameters(configuration_file, display, git_template):
     if configuration_file:
         # TODO: Complete this section
         pass
-    
+
     if display:
         template = ppm.Template(git_template=git_template)
         string = pprint.PrettyPrinter().pformat(template.parameters)
