@@ -12,13 +12,14 @@ def parse_cli_template_parameters(cli_template_parameters, template_parameters):
     This function parses the template parameters provided by the command line
     and returns a dictionary of all the template parameters with their value.
     
-    Arguments:
-        cli_template_parameters -- the template parameters recovered from the command line.
-        template_parameters -- the parameters defined by the template itself.
-    
-    Returns:
-        [dict] -- The template parameters with their value
+    :param cli_template_parameters: The template parameters recovered from the command line.
+    :type cli_template_parameters: [type]  # TODO: Complete the type of this parameter.
+    :param template_parameters: The parameters defined by the template itself.
+    :type template_parameters: [type]  # TODO: Complete the type of this parameter.
+    :return: The template parameters with their value
+    :rtype: dict
     """
+
     parser = click.OptionParser()
     for param in template_parameters:
         parser.add_option(["--" + param], param)
@@ -26,8 +27,22 @@ def parse_cli_template_parameters(cli_template_parameters, template_parameters):
 
 def get_user_defined_parameters(configuration_file, interractive, template_parameters_from_cli, template_parameters):
     """
-    TODO: Description to write
+    This function returns the template parameters values
+    from 3 possible ways of entering them with the command line.
+    
+    :param configuration_file: The configuration file as it comes from the CLI 'configuration_file' option.
+    :type configuration_file: [type]  # TODO: Complete the type of this parameter.
+    :param interractive: [description]
+    :type interractive: [type]
+    :param template_parameters_from_cli: [description]
+    :type template_parameters_from_cli: [type]
+    :param template_parameters: [description]
+    :type template_parameters: [type]
+    :raises click.BadParameter: [description]
+    :return: [description]
+    :rtype: dict
     """
+
     # Define the variable for storing the parameters defined by the user
     user_parameters = {}
     
@@ -92,7 +107,7 @@ def template_parameters(configuration_file, display, git_template):
     if display:
         template = ppm.Template(git_template=git_template)
         string = pprint.PrettyPrinter().pformat(template.parameters)
-        print(string) # TODO: Do not use print within a Click application.
+        click.echo(string)
 
 @ppm_cli.command(context_settings=dict(
     ignore_unknown_options=True,
@@ -170,10 +185,7 @@ def checkup(configuration_file, interractive, directory, git_template, template_
     _, uncompliances = ppm.is_compliant(instance=directory, template=template.dirpath)
 
     for uncompliance in uncompliances:
-        print(uncompliance['relpath'] + ': ' + uncompliance['reason']) # TODO: Use click log instead of print
-
-    # TODO: Find a common ancestor with git.
-
+        click.echo('{}: {}'.format(uncompliance['relpath'], uncompliance['reason']))
 
 @click.group()
 @click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)

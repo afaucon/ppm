@@ -22,16 +22,6 @@ install_requires = [
     "jinja2"
 ]
 
-# TODO: Modify the commands like this:
-# ppm-template parameters -c -d
-# ppm-template instanciate
-# ppm-project checkup
-# ppm-project ide
-
-# TODO: Clean C:\Users\adrie\AppData\Local\Temp
-
-# TODO: Make this project compliant with the template_package.git from my github.
-
 entry_points = {
     'console_scripts': [
         'ppm = ppm.__main__:ppm_cli',
