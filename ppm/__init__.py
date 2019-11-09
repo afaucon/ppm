@@ -26,5 +26,5 @@ from .__info__ import __license__
 from .__info__ import __copyright__
 
 
-from .api import Template
+from .template import Template
 from .checker import directories_are_compilant as is_compliant

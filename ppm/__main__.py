@@ -76,9 +76,10 @@ def get_user_defined_parameters(configuration_file, interractive, template_param
     
     return user_parameters
 
+
 @click.group()
 @click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
-def ppm_cli(verbose):
+def ppm_template_cli(verbose):
     if verbose == 0:
         logging.basicConfig(level=logging.WARNING)
     if verbose == 1:
@@ -88,7 +89,8 @@ def ppm_cli(verbose):
         # Example: DEBUG:git.cmd:Popen(['git', 'clone', ...
         logging.basicConfig(level=logging.DEBUG)
 
-@ppm_cli.command()
+
+@ppm_template_cli.command()
 @click.option('-c', '--configuration-file', 
               is_flag=True,
               help='Produce the structure of a configuration file that can be used, after completion, for instanciation or checkup')
@@ -96,7 +98,7 @@ def ppm_cli(verbose):
               is_flag=True,
               help='Display the list of the parameters of the template.')
 @click.argument('git-template')
-def template_parameters(configuration_file, display, git_template):
+def parameters(configuration_file, display, git_template):
     """
     Gets information about a generic template.
     """
@@ -109,7 +111,8 @@ def template_parameters(configuration_file, display, git_template):
         string = pprint.PrettyPrinter().pformat(template.parameters)
         click.echo(string)
 
-@ppm_cli.command(context_settings=dict(
+
+@ppm_template_cli.command(context_settings=dict(
     ignore_unknown_options=True,
 ))
 @click.option('-c', '--configuration-file', 
@@ -148,7 +151,22 @@ def instanciate(configuration_file, interractive, git_template, destination, tem
     # Instanciate the template
     template.instanciate(user_parameters, destination)
 
-@ppm_cli.command(context_settings=dict(
+
+
+@click.group()
+@click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
+def ppm_project_cli(verbose):
+    if verbose == 0:
+        logging.basicConfig(level=logging.WARNING)
+    if verbose == 1:
+        logging.basicConfig(level=logging.INFO)
+    if verbose == 2:
+        # TODO: In this mode, DEBUG log from imported packages are displayed.
+        # Example: DEBUG:git.cmd:Popen(['git', 'clone', ...
+        logging.basicConfig(level=logging.DEBUG)
+
+
+@ppm_project_cli.command(context_settings=dict(
     ignore_unknown_options=True,
 ))
 @click.option('-c', '--configuration-file', 
@@ -165,7 +183,7 @@ def instanciate(configuration_file, interractive, git_template, destination, tem
 @click.argument('template_parameters', nargs=-1, type=click.UNPROCESSED)
 def checkup(configuration_file, interractive, directory, git_template, template_parameters):
     """
-    Checks if a directory is compliant with a template.
+    Checks if a project is compliant with a template.
     """
 
     # Create the template object
@@ -186,6 +204,25 @@ def checkup(configuration_file, interractive, directory, git_template, template_
 
     for uncompliance in uncompliances:
         click.echo('{}: {}'.format(uncompliance['relpath'], uncompliance['reason']))
+
+
+@ppm_project_cli.command()
+@click.option('--vscode', 
+              is_flag=True,
+              help='Launches visual studio code.')
+@click.option('--sourcetree', 
+              is_flag=True,
+              help='Launches sourcetree.')
+@click.argument('path',
+                type=click.Path(exists=True, file_okay=False, resolve_path=True), 
+                required=False, 
+                default=".")
+def ide(vscode, sourcetree, path):
+    """
+    Opens an IDE for a project.
+    """
+    pass # TODO: To continue
+
 
 @click.group()
 @click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
@@ -224,22 +261,6 @@ def list_command():
 
 
 
-@click.command()
-@click.option('--vscode', 
-              is_flag=True,
-              help='Launches visual studio code.')
-@click.option('--sourcetree', 
-              is_flag=True,
-              help='Launches sourcetree.')
-@click.argument('path', 
-                type=click.Path(exists=True, file_okay=False, resolve_path=True), 
-                required=False, 
-                default=".")
-def ppm_ide_cli(vscode, sourcetree, path):
-    """
-    Launches an ide on a project.
-    """
-    pass
     
 
 
