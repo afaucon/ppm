@@ -1,8 +1,8 @@
 # TODO list
 
-## TODO: Clean C:\Users\adrie\AppData\Local\Temp
-
 ## TODO: Make this project compliant with the template_package.git from my github
+
+## TODO: Clean C:\Users\adrie\AppData\Local\Temp
 
 ## TODO: Make tests
 

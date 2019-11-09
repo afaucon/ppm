@@ -1,26 +1,39 @@
-
-#!/usr/bin/env python
 import os
 from setuptools import setup, find_packages
 
 
-# ------------------------------------------------------------------------------
-# Documentation: https://setuptools.readthedocs.io/en/latest/setuptools.html
-
 package_name = "ppm"
 
+
 python_requires = ">=3.8"
-# Justification:
-# https://github.com/python/cpython/pull/10320
+
+# Justificationss
+#   If GitPython clones a repository in a temporary directory
+#   then, at the end of the program when the temporary directory is about to be deleted,
+#   a permission denied error occurs, for python 3.7 and below.
+#   The standard python library 'tempdir' should not raise this error. 
+#   https://github.com/python/cpython/pull/10320
+#   The issue has been corrected in version 3.8
+
 
 dependency_links = [
 ]
+
+# Justifications
+#   None
+
 
 install_requires = [
     "click",
     "gitpython",
     "jinja2"
 ]
+
+# Justifications
+#   Click is used for the CLI
+#   gitpython it used to clone a template, and to commit modification
+#   jinja2 template engine is used for the instanciation
+
 
 entry_points = {
     'console_scripts': [

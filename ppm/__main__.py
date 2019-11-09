@@ -7,6 +7,30 @@ import ppm
 import ppm.config_templates
 
 
+# --------------------------------------------------------------------------------------------------
+@click.command()
+def main_procedure():
+    """
+    Displays informations about the package.
+    """
+    print("Not yet implemented")  # TODO: Implement this section
+
+
+
+# --------------------------------------------------------------------------------------------------
+@click.group()
+@click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
+def ppm_template_cli(verbose):
+    if verbose == 0:
+        logging.basicConfig(level=logging.WARNING)
+    if verbose == 1:
+        logging.basicConfig(level=logging.INFO)
+    if verbose == 2:
+        # TODO: In this mode, DEBUG log from imported packages are displayed.
+        # Example: DEBUG:git.cmd:Popen(['git', 'clone', ...
+        logging.basicConfig(level=logging.DEBUG)
+
+
 def parse_cli_template_parameters(cli_template_parameters, template_parameters):
     """
     This function parses the template parameters provided by the command line
@@ -77,19 +101,6 @@ def get_user_defined_parameters(configuration_file, interractive, template_param
     return user_parameters
 
 
-@click.group()
-@click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
-def ppm_template_cli(verbose):
-    if verbose == 0:
-        logging.basicConfig(level=logging.WARNING)
-    if verbose == 1:
-        logging.basicConfig(level=logging.INFO)
-    if verbose == 2:
-        # TODO: In this mode, DEBUG log from imported packages are displayed.
-        # Example: DEBUG:git.cmd:Popen(['git', 'clone', ...
-        logging.basicConfig(level=logging.DEBUG)
-
-
 @ppm_template_cli.command()
 @click.option('-c', '--configuration-file', 
               is_flag=True,
@@ -153,6 +164,7 @@ def instanciate(configuration_file, interractive, git_template, destination, tem
 
 
 
+# --------------------------------------------------------------------------------------------------
 @click.group()
 @click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
 def ppm_project_cli(verbose):
@@ -224,6 +236,7 @@ def ide(vscode, sourcetree, path):
     pass # TODO: To continue
 
 
+
 @click.group()
 @click.option('-v', '--verbose', type=click.IntRange(min=0, max=2), default=0)
 def ppm_config_templates_cli(verbose):
@@ -267,4 +280,24 @@ def list_command():
     
 if __name__ == '__main__':
     import sys
-    eval(sys.argv[1])(sys.argv[2:])
+    
+    print(sys.argv)
+
+    # Illustration:
+    #   python -m ppm
+    #   python __main__.py
+    # In both cases:
+    #   sys.argv[0] == __main__.py
+
+    # Illustration:
+    #   python -m ppm fcn
+    #   python __main__.py fcn
+    # In both cases:
+    #   sys.argv[0] == __main__.py
+    #   sys.argv[1] == fcn
+    
+    if len(sys.argv) == 1:
+        main_procedure()
+    else:
+        fcn = eval(sys.argv[1])
+        fcn(sys.argv[2:])
