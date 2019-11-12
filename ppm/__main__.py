@@ -9,7 +9,7 @@ import ppm.config_templates
 
 # --------------------------------------------------------------------------------------------------
 @click.command()
-def main_procedure():
+def ppm_cli():
     """
     Displays informations about the package.
     """
@@ -297,7 +297,7 @@ if __name__ == '__main__':
     #   sys.argv[1] == fcn
     
     if len(sys.argv) == 1:
-        main_procedure()
+        ppm_cli()
     else:
         fcn = eval(sys.argv[1])
         fcn(sys.argv[2:])

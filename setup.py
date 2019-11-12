@@ -6,8 +6,7 @@ package_name = "ppm"
 
 
 python_requires = ">=3.8"
-
-# Justificationss
+# Justifications:
 #   If GitPython clones a repository in a temporary directory
 #   then, at the end of the program when the temporary directory is about to be deleted,
 #   a permission denied error occurs, for python 3.7 and below.
@@ -18,8 +17,7 @@ python_requires = ">=3.8"
 
 dependency_links = [
 ]
-
-# Justifications
+# Justifications:
 #   None
 
 
@@ -28,8 +26,7 @@ install_requires = [
     "gitpython",
     "jinja2"
 ]
-
-# Justifications
+# Justifications:
 #   Click is used for the CLI
 #   gitpython it used to clone a template, and to commit modification
 #   jinja2 template engine is used for the instanciation
@@ -37,6 +34,7 @@ install_requires = [
 
 entry_points = {
     'console_scripts': [
+        'ppm = ppm.__main__:ppm_cli',
         'ppm-template = ppm.__main__:ppm_template_cli',
         'ppm-project = ppm.__main__:ppm_project_cli',
         'ppm-config-templates = ppm.__main__:ppm_config_templates_cli',
